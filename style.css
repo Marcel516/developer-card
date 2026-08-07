@@ -1,3 +1,14 @@
+@media (max-width: 500px) {
+    main {
+        padding: 1.5rem;
+    }
+
+    .actions {
+        flex-direction: column;
+        align-items: center;
+    }
+}
+
 * {
     box-sizing: border-box;
 }
@@ -60,6 +71,8 @@ section {
 }
 
 ul {
-    padding: 0;
-    list-style-position: inside;
+    width: fit-content;
+    margin: 0 auto;
+    padding-left: 20px;
+    text-align: left;
 }
