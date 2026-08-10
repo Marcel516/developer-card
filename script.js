@@ -17,3 +17,31 @@ function showContactMessage(){
     messageVisible = !messageVisible;
 }
 
+
+
+const skills = ["HTML", "CSS", "JavaScript", "Bootstrap"];
+
+skills.push("Git");
+
+const skillList = document.getElementById("skillsList");
+
+for (const skill of skills) {
+    const skillItem = document.createElement("li");
+
+    skillItem.textContent = skill;
+
+    skillList.appendChild(skillItem);
+}
+
+const addSkillButton = document.getElementById("addSkillButton");
+
+addSkillButton.addEventListener("click", function () {
+    const skillItem = document.createElement("li");
+
+    skillItem.textContent = "React";
+
+    skills.push("React");
+
+    skillList.appendChild(skillItem);
+});
+
