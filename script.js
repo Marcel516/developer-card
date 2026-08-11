@@ -35,13 +35,43 @@ for (const skill of skills) {
 
 const addSkillButton = document.getElementById("addSkillButton");
 
+function addSkill(skillName) {
+    if (!skills.includes(skillName)) {
+        const skillItem = document.createElement("li");
+
+        skillItem.textContent = skillName;
+
+        skills.push(skillName);
+
+        skillList.appendChild(skillItem);
+    } else {
+        console.log(`${skillName} ist bereits vorhanden`);
+    }
+}
+
 addSkillButton.addEventListener("click", function () {
-    const skillItem = document.createElement("li");
+    const newSkill = skillInput.value.trim();
 
-    skillItem.textContent = "React";
-
-    skills.push("React");
-
-    skillList.appendChild(skillItem);
+    if(newSkill !== "") {
+        addSkill(newSkill);
+        skillInput.value = "";
+    }
+    
 });
+
+
+const skillInput = document.getElementById("skillInput");
+
+skillInput.addEventListener("keydown", function(event){
+    if(event.key === "Enter"){
+        const newSkill = skillInput.value.trim();
+
+        if(newSkill !== "") {
+            addSkill(newSkill);
+            skillInput.value = "";
+        }
+    }
+});
+
+
 
