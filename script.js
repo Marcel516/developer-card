@@ -75,3 +75,33 @@ skillInput.addEventListener("keydown", function(event){
 
 
 
+const projects = [
+    {
+        title: "HTML",
+        finished: true
+    },
+    {
+        title: "CSS",
+        finished: true
+    },
+    {
+        title: "REACT",
+        finished: false
+    }
+];
+
+const projectList = document.getElementById("projectList");
+
+for (const project of projects) {
+    const projectItem = document.createElement("li");
+
+    if(project.finished){
+        projectItem.textContent = (`${project.title} - fertig`);
+    }else {
+        projectItem.textContent = (`${project.title} - noch nicht fertig`);
+    }
+
+    projectList.appendChild(projectItem);
+
+}
+
