@@ -96,12 +96,42 @@ for (const project of projects) {
     const projectItem = document.createElement("li");
 
     if(project.finished){
-        projectItem.textContent = (`${project.title} - fertig`);
+        projectItem.textContent = `${project.title} - fertig`;
+
+        projectItem.classList.add("finished");
     }else {
-        projectItem.textContent = (`${project.title} - noch nicht fertig`);
+        projectItem.textContent = `${project.title} - noch nicht fertig`;
+
+        projectItem.classList.add("unfinished");
     }
+    
+    projectItem.addEventListener("click", function() {
+        projectItem.classList.toggle("selected");
+
+        if(projectItem.classList.contains("selected")) {
+            console.log(`${project.title} ist ausgewählt`);
+        } else {
+            console.log(`${project.title} ist nicht mehr ausgewählt`);
+        }
+    });
+
+    projectItem.addEventListener("click", function () {
+        project.finished = !project.finished;
+
+        if(project.finished) {
+            projectItem.textContent = `${project.title} - fertig`;
+            projectItem.classList.add("finished");
+            projectItem.classList.remove("unfinished");
+        } else {
+            projectItem.textContent = `${project.title} - noch nicht fertig`;
+            projectItem.classList.add("unfinished");
+            projectItem.classList.remove("finished");
+        }
+    });
 
     projectList.appendChild(projectItem);
-
 }
+
+
+
 
