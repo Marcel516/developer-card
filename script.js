@@ -19,31 +19,60 @@ function showContactMessage(){
 
 
 
-const skills = ["HTML", "CSS", "JavaScript", "Bootstrap"];
+const savedSkills = localStorage.getItem("skills");
 
-skills.push("Git");
+let skills;
+
+if(savedSkills) {
+    skills = JSON.parse(savedSkills);
+} else {
+    skills = ["HTML", "CSS", "JavaScript", "Bootstrap", "Git"];
+}
 
 const skillList = document.getElementById("skillsList");
 
-for (const skill of skills) {
-    const skillItem = document.createElement("li");
+function renderSkills(){
+    skillList.innerHTML = "";
 
-    skillItem.textContent = skill;
+    for (const skill of skills) {
+        const skillItem = document.createElement("li");
 
-    skillList.appendChild(skillItem);
+        skillItem.textContent = skill;
+
+        const deleteButton = document.createElement("button");
+        deleteButton.textContent = "Löschen";
+
+        deleteButton.addEventListener("click", function() {
+            removeSkill(skill);
+        })
+
+        skillItem.appendChild(deleteButton);
+        skillList.appendChild(skillItem);
+        
+    }
 }
+
+function removeSkill(skillName){
+    skills = skills.filter(function (skill) {
+        return skill !== skillName;
+    });
+
+    localStorage.setItem("skills", JSON.stringify(skills));
+
+    renderSkills();
+}
+
+renderSkills();
 
 const addSkillButton = document.getElementById("addSkillButton");
 
 function addSkill(skillName) {
     if (!skills.includes(skillName)) {
-        const skillItem = document.createElement("li");
-
-        skillItem.textContent = skillName;
-
         skills.push(skillName);
 
-        skillList.appendChild(skillItem);
+        localStorage.setItem("skills", JSON.stringify(skills));
+
+        renderSkills();
     } else {
         console.log(`${skillName} ist bereits vorhanden`);
     }
@@ -71,6 +100,22 @@ skillInput.addEventListener("keydown", function(event){
             skillInput.value = "";
         }
     }
+});
+
+const clearSkillsButton = document.getElementById("clearSkillsButton");
+
+clearSkillsButton.addEventListener("click",function () {
+    const confirmed = confirm("Möchtest du wirklich alle Skills löschen?");
+
+    if(confirmed) {
+        skills = [];
+
+        localStorage.setItem("skills", JSON.stringify(skills));
+
+        renderSkills();
+    }
+
+    
 });
 
 
@@ -131,7 +176,3 @@ for (const project of projects) {
 
     projectList.appendChild(projectItem);
 }
-
-
-
-
