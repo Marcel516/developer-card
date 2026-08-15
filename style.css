@@ -86,6 +86,38 @@ main {
 }
 
 
+#skillError:empty {
+    display: none;
+}
+
+#skillError {
+    color: red;
+    font-size: 0.9rem;
+    background-color: #ffebee;
+    padding: 2px 3px;
+    border-radius: 12px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+#skillSuccess:empty {
+    display: none;
+}
+
+#skillSuccess {
+    color: green;
+    background-color: #e8f5e9;
+    padding: 2px 3px;
+    border-radius: 12px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+#skillSuccess:empty {
+    display: none;
+}
+
+
 #projectList {
     list-style: none;
     padding: 0;

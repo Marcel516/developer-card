@@ -24,15 +24,25 @@
         <section>
             <h3>Meine bisherigen Kenntnisse:</h3>
             <ul id="skillsList"></ul>
-            <input
-                id="skillInput"
-                type="text"
-                placeholder="Neuen Skill eingeben"
-            >
+            <form id="skillForm" novalidate>
+                <input
+                    id="skillInput"
+                    type="text"
+                    placeholder="Neuen Skill eingeben"
+                    required
+                    minlength="2"
+                >
 
-            <button id="addSkillButton" type="button">
-                Skill hinzufügen
-            </button>
+                <button type="submit">
+                    Skill hinzufügen
+                </button>
+
+                <p id="skillError"></p>
+                <p id="skillSuccess"></p>
+
+                
+            </form>
+            
         </section>
             
         <button id="clearSkillsButton" type="button">

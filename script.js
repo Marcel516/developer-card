@@ -73,34 +73,57 @@ function addSkill(skillName) {
         localStorage.setItem("skills", JSON.stringify(skills));
 
         renderSkills();
+
+        return true;
     } else {
         console.log(`${skillName} ist bereits vorhanden`);
+        return false;
     }
 }
 
-addSkillButton.addEventListener("click", function () {
-    const newSkill = skillInput.value.trim();
-
-    if(newSkill !== "") {
-        addSkill(newSkill);
-        skillInput.value = "";
-    }
-    
-});
 
 
 const skillInput = document.getElementById("skillInput");
+const skillForm = document.getElementById("skillForm");
+const skillError = document.getElementById("skillError");
+const skillSuccess = document.getElementById("skillSuccess");
 
-skillInput.addEventListener("keydown", function(event){
-    if(event.key === "Enter"){
-        const newSkill = skillInput.value.trim();
+skillForm.addEventListener("submit", function (event) {
+    event.preventDefault();
 
-        if(newSkill !== "") {
-            addSkill(newSkill);
-            skillInput.value = "";
-        }
+    const newSkill = skillInput.value.trim();
+
+
+    if (newSkill === ""){
+        skillError.textContent = "Bitte gib einen Skill ein.";
+        skillSuccess.textContent = "";
+        return;
     }
+
+    if (newSkill.length < 2) {
+        skillError.textContent = "Der Skill muss mindestens 2 Zeichen lang sein.";
+        skillSuccess.textContent = "";
+        return;
+    }
+
+    const wasAdded = addSkill(newSkill);
+
+    if (wasAdded) {
+        skillSuccess.textContent = `${newSkill} wurde erfolgreich hinzugefügt.`; 
+        setTimeout(function () {
+            skillSuccess.textContent = "";
+        }, 3000);
+        skillError.textContent = "";
+
+        skillInput.value ="";
+    } else {
+        skillError.textContent = `${newSkill} ist bereits vorhanden.`;
+        skillSuccess.textContent = "";
+    }
+
 });
+
+
 
 const clearSkillsButton = document.getElementById("clearSkillsButton");
 
