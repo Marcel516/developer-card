@@ -18,16 +18,8 @@ function showContactMessage(){
 }
 
 
+let skills = loadSkills();
 
-const savedSkills = localStorage.getItem("skills");
-
-let skills;
-
-if(savedSkills) {
-    skills = JSON.parse(savedSkills);
-} else {
-    skills = ["HTML", "CSS", "JavaScript", "Bootstrap", "Git"];
-}
 
 const skillList = document.getElementById("skillsList");
 
@@ -35,21 +27,27 @@ function renderSkills(){
     skillList.innerHTML = "";
 
     for (const skill of skills) {
-        const skillItem = document.createElement("li");
+        const skillItem = createSkillItem(skill);
 
-        skillItem.textContent = skill;
-
-        const deleteButton = document.createElement("button");
-        deleteButton.textContent = "Löschen";
-
-        deleteButton.addEventListener("click", function() {
-            removeSkill(skill);
-        })
-
-        skillItem.appendChild(deleteButton);
         skillList.appendChild(skillItem);
-        
     }
+}
+
+function createSkillItem(skill) {
+    const skillItem = document.createElement("li");
+
+    const deleteButton = document.createElement("button");
+
+    skillItem.textContent = skill;
+    deleteButton.textContent = "Löschen";
+
+    deleteButton.addEventListener("click", function(){
+        removeSkill(skill);
+    })
+
+    skillItem.appendChild(deleteButton);
+
+    return skillItem;
 }
 
 function removeSkill(skillName){
@@ -57,8 +55,7 @@ function removeSkill(skillName){
         return skill !== skillName;
     });
 
-    localStorage.setItem("skills", JSON.stringify(skills));
-
+    saveSkills();
     renderSkills();
 }
 
@@ -67,20 +64,35 @@ renderSkills();
 const addSkillButton = document.getElementById("addSkillButton");
 
 function addSkill(skillName) {
-    if (!skills.includes(skillName)) {
-        skills.push(skillName);
-
-        localStorage.setItem("skills", JSON.stringify(skills));
-
-        renderSkills();
-
-        return true;
-    } else {
+    if (skills.includes(skillName)) {
         console.log(`${skillName} ist bereits vorhanden`);
         return false;
-    }
+    } 
+
+    skills.push(skillName);
+
+    saveSkills();
+    renderSkills();
+
+    return true;
+    
 }
 
+
+function saveSkills() {
+    localStorage.setItem("skills", JSON.stringify(skills));
+}
+
+
+function loadSkills() {
+    const savedSkills = localStorage.getItem("skills");
+
+    if (savedSkills) {
+        return JSON.parse(savedSkills);
+    }
+
+    return ["HTML", "CSS", "JavaScript", "Bootstrap", "Git"];
+}
 
 
 const skillInput = document.getElementById("skillInput");
@@ -124,7 +136,6 @@ skillForm.addEventListener("submit", function (event) {
 });
 
 
-
 const clearSkillsButton = document.getElementById("clearSkillsButton");
 
 clearSkillsButton.addEventListener("click",function () {
@@ -133,14 +144,11 @@ clearSkillsButton.addEventListener("click",function () {
     if(confirmed) {
         skills = [];
 
-        localStorage.setItem("skills", JSON.stringify(skills));
-
+        saveSkills();
         renderSkills();
     }
 
-    
 });
-
 
 
 const projects = [
