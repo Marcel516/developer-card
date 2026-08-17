@@ -64,7 +64,11 @@ renderSkills();
 const addSkillButton = document.getElementById("addSkillButton");
 
 function addSkill(skillName) {
-    if (skills.includes(skillName)) {
+    const skillExist = skills.some(function (skill){
+        return skill.toLowerCase() === skillName.toLowerCase();
+    });
+
+    if (skillExist) {
         console.log(`${skillName} ist bereits vorhanden`);
         return false;
     } 
@@ -75,7 +79,6 @@ function addSkill(skillName) {
     renderSkills();
 
     return true;
-    
 }
 
 
@@ -207,3 +210,20 @@ for (const project of projects) {
 
     projectList.appendChild(projectItem);
 }
+
+
+
+
+const testSkills = ["HTML", "CSS", "JavaScript", "React"];
+
+const result = testSkills
+    .filter(function (skill){
+    return skill.length > 4
+  })
+  .map(function (skill){
+    return `Langer Skill: ${skill}`
+  });
+
+  console.log(result);
+
+
