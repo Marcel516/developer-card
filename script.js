@@ -216,14 +216,20 @@ for (const project of projects) {
 
 const testSkills = ["HTML", "CSS", "JavaScript", "React"];
 
-const result = testSkills
-    .filter(function (skill){
-    return skill.length > 4
-  })
-  .map(function (skill){
-    return `Langer Skill: ${skill}`
-  });
-
-  console.log(result);
+/*const result = testSkills.map((skill) => {
+    const upperSkill = skill.toUpperCase();
+    return `Skill: ${upperSkill}`;
+}); console.log(result);
+*/
 
 
+
+const longSkills = testSkills.filter(
+    (skill) => skill.length > 4
+); console.log(longSkills);
+
+
+
+const result = testSkills.map(
+    skill => `Skill: ${skill}`
+); console.log(result);
