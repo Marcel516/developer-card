@@ -208,3 +208,28 @@ for (const project of projects) {
 
     projectList.appendChild(projectItem);
 }
+
+
+const frontendSkills = ["HTML", "CSS", "JavaScript"];
+
+const developer = {
+    name: "Marcel",
+    role: "Frontend-Entwickler"
+};
+
+const allSkills = [...frontendSkills, "React", "Git"];
+
+const updatedDeveloper = {
+    ...developer,
+    skills: allSkills
+};
+
+const {
+    name,
+    ...developerData
+} = updatedDeveloper
+
+console.log(name);
+console.log(developerData);
+
+
