@@ -210,26 +210,15 @@ for (const project of projects) {
 }
 
 
-const frontendSkills = ["HTML", "CSS", "JavaScript"];
+const mySkills = ["HTML", "CSS", "JavaScript", "React", "Git", "TypeScript"];
 
-const developer = {
-    name: "Marcel",
-    role: "Frontend-Entwickler"
-};
+mySkills
+.filter(skill => skill.length > 4)
+.map(skill => `Skill: ${skill}`)
+.forEach(skill => {
+    console.log(skill);
+});
 
-const allSkills = [...frontendSkills, "React", "Git"];
 
-const updatedDeveloper = {
-    ...developer,
-    skills: allSkills
-};
-
-const {
-    name,
-    ...developerData
-} = updatedDeveloper
-
-console.log(name);
-console.log(developerData);
 
 
