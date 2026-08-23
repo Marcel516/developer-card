@@ -210,18 +210,18 @@ for (const project of projects) {
 }
 
 
-const orders = [
-    { product: "Tastatur", price: 50 },
-    { product: "Maus", price: 25 },
-    { product: "Monitor", price: 200 },
-    { product: "Kabel", price: 10 }
-];
+console.log("Taining gestartet");
 
-const total = orders
-    .filter(order => order.price > 20)
-    .map(order => order.price)
-    .reduce((sum, price) => {
-        return sum + price;
-    }, 0);
+let round = 0;
 
-console.log(total);
+const rounds = setInterval(() => {
+    round++;
+    console.log(`Runde: ${round}`)
+
+    if(round === 3) {
+        clearInterval(rounds);
+        console.log("Training beendet");
+    }
+
+}, 1000);
+
