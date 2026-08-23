@@ -210,15 +210,18 @@ for (const project of projects) {
 }
 
 
-const mySkills = ["HTML", "CSS", "JavaScript", "React", "Git", "TypeScript"];
+const orders = [
+    { product: "Tastatur", price: 50 },
+    { product: "Maus", price: 25 },
+    { product: "Monitor", price: 200 },
+    { product: "Kabel", price: 10 }
+];
 
-mySkills
-.filter(skill => skill.length > 4)
-.map(skill => `Skill: ${skill}`)
-.forEach(skill => {
-    console.log(skill);
-});
+const total = orders
+    .filter(order => order.price > 20)
+    .map(order => order.price)
+    .reduce((sum, price) => {
+        return sum + price;
+    }, 0);
 
-
-
-
+console.log(total);
