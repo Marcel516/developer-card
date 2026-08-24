@@ -210,18 +210,16 @@ for (const project of projects) {
 }
 
 
-console.log("Taining gestartet");
+Promise.resolve("Login gestartet")
+    .then(result => {
+        console.log(result);
 
-let round = 0;
-
-const rounds = setInterval(() => {
-    round++;
-    console.log(`Runde: ${round}`)
-
-    if(round === 3) {
-        clearInterval(rounds);
-        console.log("Training beendet");
-    }
-
-}, 1000);
-
+        return new Promise(resolve => {
+            setTimeout(() => {
+                resolve("Benutzer geladen");
+            }, 2000);
+        });
+    })
+    .then(result => {
+        console.log(result);
+    });
