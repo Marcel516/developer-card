@@ -210,16 +210,49 @@ for (const project of projects) {
 }
 
 
-Promise.resolve("Login gestartet")
-    .then(result => {
-        console.log(result);
-
-        return new Promise(resolve => {
-            setTimeout(() => {
-                resolve("Benutzer geladen");
-            }, 2000);
-        });
-    })
-    .then(result => {
-        console.log(result);
+function loadProfile() {
+    return new Promise(resolve => {
+        setTimeout(() => {
+            resolve("Profil geladen");
+        }, 1000);
     });
+}
+
+function loadSkills() {
+    return new Promise(resolve => {
+        setTimeout(() => {
+            resolve("Skills geladen");
+        }, 1000);
+    });
+}
+
+function loadProjects() {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            reject("Projekte konnten nicht geladen werden");
+        }, 1000);
+    });
+}
+
+
+async function startApp() {
+    try {
+        const [profileResult, skillsResult, projectsResult] = await Promise.all([
+            loadProfile(),
+            loadSkills(),
+            loadProjects()
+        ]);
+
+        console.log(profileResult);
+        console.log(skillsResult);
+        console.log(projectsResult);
+
+    } catch (error) {
+        console.log(error);
+    } finally {
+        console.log("App-Vorgang beendet");
+    }
+
+}
+
+startApp();
