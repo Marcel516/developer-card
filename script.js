@@ -210,49 +210,29 @@ for (const project of projects) {
 }
 
 
-function loadProfile() {
-    return new Promise(resolve => {
-        setTimeout(() => {
-            resolve("Profil geladen");
-        }, 1000);
-    });
-}
-
-function loadSkills() {
-    return new Promise(resolve => {
-        setTimeout(() => {
-            resolve("Skills geladen");
-        }, 1000);
-    });
-}
-
-function loadProjects() {
-    return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            reject("Projekte konnten nicht geladen werden");
-        }, 1000);
-    });
-}
-
-
-async function startApp() {
+async function loadUserCities() {
     try {
-        const [profileResult, skillsResult, projectsResult] = await Promise.all([
-            loadProfile(),
-            loadSkills(),
-            loadProjects()
-        ]);
+        const response = await fetch("https://jsonplaceholder.typicode.com/users");
 
-        console.log(profileResult);
-        console.log(skillsResult);
-        console.log(projectsResult);
+        if (!response.ok) {
+            throw new Error ("Nutzer konnten nicht geladen werden");
+        }
 
+        const users = await response.json();
+
+        const userList = document.getElementById("userList");
+
+        userList.innerHTML = "";
+
+        users.forEach((user) => {
+            const listItem = document.createElement("li");
+            listItem.textContent = `${user.name} - ${user.address.city}`;
+
+            userList.appendChild(listItem);
+        });
     } catch (error) {
-        console.log(error);
-    } finally {
-        console.log("App-Vorgang beendet");
+        console.log(error.message);
     }
+};
 
-}
-
-startApp();
+loadUserCities();
