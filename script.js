@@ -210,29 +210,54 @@ for (const project of projects) {
 }
 
 
+const reloadButton = document.getElementById("reloadButton");
+const userError = document.getElementById("userError");
+const userSuccess = document.getElementById("userSuccess");
+const userList = document.getElementById("userList");
+
+reloadButton.addEventListener("click", loadUserCities);
+
+function setLoading(isLoading) {
+    reloadButton.disabled = isLoading;
+    reloadButton.textContent = isLoading ? "Lädt..." : "Daten neu laden";
+}
+
+function showError(message) {
+    userError.textContent = message;
+}
+
+function showSuccess(message) {
+    userSuccess.textContent = message;
+}
+
 async function loadUserCities() {
     try {
+        showError("");
+        showSuccess("");
+        setLoading(true);
+
         const response = await fetch("https://jsonplaceholder.typicode.com/users");
 
         if (!response.ok) {
-            throw new Error ("Nutzer konnten nicht geladen werden");
+            throw new Error("Nutzer konnten nicht geladen werden");
         }
 
         const users = await response.json();
-
-        const userList = document.getElementById("userList");
 
         userList.innerHTML = "";
 
         users.forEach((user) => {
             const listItem = document.createElement("li");
             listItem.textContent = `${user.name} - ${user.address.city}`;
-
             userList.appendChild(listItem);
         });
+
+        showSuccess(`${users.length} Nutzer geladen`);
     } catch (error) {
-        console.log(error.message);
+        showError(error.message);
+    } finally {
+        setLoading(false);
     }
-};
+}
 
 loadUserCities();
