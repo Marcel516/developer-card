@@ -210,54 +210,75 @@ for (const project of projects) {
 }
 
 
-const reloadButton = document.getElementById("reloadButton");
-const userError = document.getElementById("userError");
-const userSuccess = document.getElementById("userSuccess");
-const userList = document.getElementById("userList");
+const postError = document.getElementById("postError");
+const postList = document.getElementById("postList");
+const loadPostsButton = document.getElementById("loadPostsButton");
+const userIdInput = document.getElementById("userIdInput");
 
-reloadButton.addEventListener("click", loadUserCities);
+loadPostsButton.addEventListener("click", loadPosts);
 
-function setLoading(isLoading) {
-    reloadButton.disabled = isLoading;
-    reloadButton.textContent = isLoading ? "Lädt..." : "Daten neu laden";
-}
+async function loadPosts() {
+    postError.textContent = "";
 
-function showError(message) {
-    userError.textContent = message;
-}
+    const userId = userIdInput.value.trim();
 
-function showSuccess(message) {
-    userSuccess.textContent = message;
-}
+    if (!userId) {
+        postError.textContent = "Bitte eine User-ID eingeben";
+        return;
+    }
 
-async function loadUserCities() {
+    loadPostsButton.disabled = true;
+    loadPostsButton.textContent = "Lädt...";
+
+    const params = new URLSearchParams({
+        userId
+    });
+
     try {
-        showError("");
-        showSuccess("");
-        setLoading(true);
-
-        const response = await fetch("https://jsonplaceholder.typicode.com/users");
+        const response = await fetch(
+            `https://jsonplaceholder.typicode.com/posts?${params}`
+        );
 
         if (!response.ok) {
-            throw new Error("Nutzer konnten nicht geladen werden");
+            throw new Error("Posts konnten nicht geladen werden");
         }
 
-        const users = await response.json();
+        const posts = await response.json();
 
-        userList.innerHTML = "";
+        if (posts.length === 0) {
+            postError.textContent = "Keine Posts gefunden";
+            postList.innerHTML = "";
+            return;
+        }
 
-        users.forEach((user) => {
+        postList.innerHTML = "";
+
+        posts.forEach(post => {
             const listItem = document.createElement("li");
-            listItem.textContent = `${user.name} - ${user.address.city}`;
-            userList.appendChild(listItem);
+
+            const title = document.createElement("h3");
+            title.textContent = post.title;
+
+            const body = document.createElement("p");
+            body.textContent = post.body;
+
+            listItem.appendChild(title);
+            listItem.appendChild(body);
+
+            postList.appendChild(listItem);
         });
 
-        showSuccess(`${users.length} Nutzer geladen`);
     } catch (error) {
-        showError(error.message);
+        postError.textContent = error.message;
+
     } finally {
-        setLoading(false);
+        loadPostsButton.disabled = false;
+        loadPostsButton.textContent = "Posts laden";
     }
 }
 
-loadUserCities();
+
+
+
+
+
