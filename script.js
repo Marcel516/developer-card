@@ -220,30 +220,16 @@ loadPostsButton.addEventListener("click", loadPosts);
 async function loadPosts() {
     postError.textContent = "";
 
-    const userId = userIdInput.value.trim();
+    const userId = getUserId();
 
     if (!userId) {
-        postError.textContent = "Bitte eine User-ID eingeben";
         return;
     }
 
-    loadPostsButton.disabled = true;
-    loadPostsButton.textContent = "Lädt...";
-
-    const params = new URLSearchParams({
-        userId
-    });
+    setLoading(true);
 
     try {
-        const response = await fetch(
-            `https://jsonplaceholder.typicode.com/posts?${params}`
-        );
-
-        if (!response.ok) {
-            throw new Error("Posts konnten nicht geladen werden");
-        }
-
-        const posts = await response.json();
+        const posts = await fetchPosts(userId);
 
         if (posts.length === 0) {
             postError.textContent = "Keine Posts gefunden";
@@ -251,34 +237,61 @@ async function loadPosts() {
             return;
         }
 
-        postList.innerHTML = "";
-
-        posts.forEach(post => {
-            const listItem = document.createElement("li");
-
-            const title = document.createElement("h3");
-            title.textContent = post.title;
-
-            const body = document.createElement("p");
-            body.textContent = post.body;
-
-            listItem.appendChild(title);
-            listItem.appendChild(body);
-
-            postList.appendChild(listItem);
-        });
-
+        renderPosts(posts);
     } catch (error) {
         postError.textContent = error.message;
-
     } finally {
-        loadPostsButton.disabled = false;
-        loadPostsButton.textContent = "Posts laden";
+        setLoading(false);
     }
 }
 
+async function fetchPosts(userId) {
+    const params = new URLSearchParams({
+        userId
+    });
 
+    const response = await fetch(
+        `https://jsonplaceholder.typicode.com/posts?${params}`
+    );
 
+    if (!response.ok) {
+        throw new Error("Posts konnten nicht geladen werden");
+    }
 
+    return response.json();
+}
 
+function renderPosts(posts) {
+    postList.innerHTML = "";
 
+    posts.forEach(post => {
+        const listItem = document.createElement("li");
+
+        const title = document.createElement("h3");
+        title.textContent = post.title;
+
+        const body = document.createElement("p");
+        body.textContent = post.body;
+
+        listItem.appendChild(title);
+        listItem.appendChild(body);
+
+        postList.appendChild(listItem);
+    });
+}
+
+function getUserId() {
+    const userId = userIdInput.value.trim();
+
+    if (!userId) {
+        postError.textContent = "Bitte eine User-ID eingeben";
+        return null;
+    }
+
+    return userId;
+}
+
+function setLoading(isLoading) {
+    loadPostsButton.disabled = isLoading;
+    loadPostsButton.textContent = isLoading ? "Lädt..." : "Posts laden";
+}
