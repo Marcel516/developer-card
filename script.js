@@ -218,7 +218,7 @@ const userIdInput = document.getElementById("userIdInput");
 loadPostsButton.addEventListener("click", loadPosts);
 
 async function loadPosts() {
-    postError.textContent = "";
+    clearPostError();
 
     const userId = getUserId();
 
@@ -232,17 +232,29 @@ async function loadPosts() {
         const posts = await fetchPosts(userId);
 
         if (posts.length === 0) {
-            postError.textContent = "Keine Posts gefunden";
-            postList.innerHTML = "";
+            showPostError("Keine Posts gefunden");
+            clearPostList();
             return;
         }
 
         renderPosts(posts);
     } catch (error) {
-        postError.textContent = error.message;
+        showPostError(error.message);
     } finally {
         setLoading(false);
     }
+}
+
+function clearPostError() {
+    postError.textContent = "";
+}
+
+function showPostError(message) {
+    postError.textContent = message;
+}
+
+function clearPostList() {
+    postList.innerHTML = "";
 }
 
 async function fetchPosts(userId) {
@@ -261,22 +273,27 @@ async function fetchPosts(userId) {
     return response.json();
 }
 
+function createPostItem(post) {
+    const listItem = document.createElement("li");
+
+    const title = document.createElement("h3");
+    title.textContent = post.title;
+
+    const body = document.createElement("p");
+    body.textContent = post.body;
+
+    listItem.appendChild(title);
+    listItem.appendChild(body);
+
+    return listItem;
+}
+
 function renderPosts(posts) {
-    postList.innerHTML = "";
+    clearPostList();
 
     posts.forEach(post => {
-        const listItem = document.createElement("li");
-
-        const title = document.createElement("h3");
-        title.textContent = post.title;
-
-        const body = document.createElement("p");
-        body.textContent = post.body;
-
-        listItem.appendChild(title);
-        listItem.appendChild(body);
-
-        postList.appendChild(listItem);
+        const postItem = createPostItem(post);
+        postList.appendChild(postItem);
     });
 }
 
