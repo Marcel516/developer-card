@@ -208,10 +208,3 @@ for (const project of projects) {
 
     projectList.appendChild(projectItem);
 }
-
-
-import multiply, { greet as sayHello, bye } from "./utils.js";
-
-console.log(sayHello("Marcel"));
-console.log(bye("Marcel"));
-console.log(multiply(4, 5));
