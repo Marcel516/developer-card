@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>User Dashboard</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <main>
+        <h1>User Dashboard</h1>
+
+        <section>
+            <label for="userIdInput">User-ID</label>
+
+            <input
+                id="userIdInput"
+                type="number"
+                placeholder="z. B. 1"
+            >
+
+            <button id="loadUserButton" type="button">
+                Benutzer laden
+            </button>
+
+            <p id="userError"></p>
+        </section>
+
+        <section id="userSection">
+            <p id="userName"></p>
+            <p id="userEmail"></p>
+            <p id="userCity"></p>
+        </section>
+
+        <section>
+            <h2>Beiträge</h2>
+
+            <ul id="postList"></ul>
+        </section>
+    </main>
+
+    <script type="module" src="/main.js"></script>
+</body>
+</html>
