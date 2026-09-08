@@ -15,6 +15,10 @@ import {
 const userIdInput = document.getElementById("userIdInput");
 const loadUserButton = document.getElementById("loadUserButton");
 
+const postSearchInput = document.getElementById("postSearchInput");
+
+let currentPosts = [];
+
 
 async function loadUser() {
     const userId = userIdInput.value.trim();
@@ -41,8 +45,8 @@ async function loadUser() {
         const user = await fetchUser(userIdNumber);
         renderUser(user);
 
-        const posts = await fetchPosts(userIdNumber);
-        renderPosts(posts);
+        currentPosts = await fetchPosts(userIdNumber);
+        renderPosts(currentPosts);
 
     } catch (error) {
         showUserError(error.message);
@@ -58,3 +62,15 @@ userIdInput.addEventListener("keydown", (event) => {
         loadUser();
     }
 });
+
+function filterPosts() {
+    const searchTerm = postSearchInput.value.trim().toLowerCase();
+
+    const filteredPosts = currentPosts.filter((post) => {
+        return post.title.toLowerCase().includes(searchTerm);
+    });
+
+    renderPosts(filteredPosts);
+}
+
+postSearchInput.addEventListener("input", filterPosts);
