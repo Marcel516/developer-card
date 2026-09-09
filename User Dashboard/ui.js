@@ -26,6 +26,8 @@ export function setUserLoading(button, isLoading) {
 export function renderPosts(posts) {
     const postList = document.getElementById("postList");
 
+    updatePostCount(posts.length);
+
     postList.innerHTML = "";
 
     if (posts.length === 0) {
@@ -60,9 +62,14 @@ export function clearUser() {
     userName.textContent = "";
     userEmail.textContent = "";
     userCity.textContent = "";
-}
+} 
 
 export function clearPosts() {
     const postList = document.getElementById("postList");
     postList.innerHTML = "";
+}
+
+export function updatePostCount(count) {
+    const postCount = document.getElementById("postCount");
+    postCount.textContent = `${count} Beiträge`;
 }

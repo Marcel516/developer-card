@@ -46,6 +46,16 @@
                 placeholder="Suchbegriff eingeben"
             >
 
+            <label for="sortPostsSelect">Sortierung</label>
+
+            <select id="sortPostsSelect">
+                <option value="default">Standard</option>
+                <option value="asc">Titel A-Z</option>
+                <option value="desc">Titel Z-A</option>
+            </select>
+
+            <p id="postCount"></p>
+
             <ul id="postList"></ul>
         </section>
     </main>

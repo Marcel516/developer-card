@@ -17,10 +17,15 @@ const loadUserButton = document.getElementById("loadUserButton");
 
 const postSearchInput = document.getElementById("postSearchInput");
 
+const sortPostsSelect = document.getElementById("sortPostsSelect");
+
 let currentPosts = [];
 
 
 async function loadUser() {
+    postSearchInput.value = "";
+    sortPostsSelect.value = "default";
+
     const userId = userIdInput.value.trim();
 
     clearUserError();
@@ -63,14 +68,29 @@ userIdInput.addEventListener("keydown", (event) => {
     }
 });
 
-function filterPosts() {
+
+postSearchInput.addEventListener("input", updatePosts);
+sortPostsSelect.addEventListener("change", updatePosts);
+
+function updatePosts() {
     const searchTerm = postSearchInput.value.trim().toLowerCase();
 
     const filteredPosts = currentPosts.filter((post) => {
         return post.title.toLowerCase().includes(searchTerm);
     });
 
-    renderPosts(filteredPosts);
-}
+    const sort = sortPostsSelect.value;
+    const sortedPosts = [...filteredPosts];
 
-postSearchInput.addEventListener("input", filterPosts);
+    if (sort === "asc") {
+        sortedPosts.sort((a, b) => a.title.localeCompare(b.title));
+    }
+
+    if (sort === "desc") {
+        sortedPosts.sort((a, b) => b.title.localeCompare(a.title));
+    }
+
+
+    renderPosts(sortedPosts);
+
+}
