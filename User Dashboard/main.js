@@ -9,7 +9,11 @@ import {
     setUserLoading,
     renderPosts,
     clearUser,
-    clearPosts
+    clearPosts,
+    showStatus,
+    clearStatus,
+    showSections,
+    hideSections
 } from "./ui.js";
 
 const userIdInput = document.getElementById("userIdInput");
@@ -20,6 +24,7 @@ const postSearchInput = document.getElementById("postSearchInput");
 const sortPostsSelect = document.getElementById("sortPostsSelect");
 
 let currentPosts = [];
+let statusTimer;
 
 
 async function loadUser() {
@@ -28,6 +33,8 @@ async function loadUser() {
 
     const userId = userIdInput.value.trim();
 
+    hideSections();
+    clearStatus();
     clearUserError();
     clearUser();
     clearPosts();
@@ -44,6 +51,7 @@ async function loadUser() {
         return;
     }
 
+    showStatus("Benutzer wird geladen...");
     setUserLoading(loadUserButton, true);
 
     try {
@@ -53,7 +61,18 @@ async function loadUser() {
         currentPosts = await fetchPosts(userIdNumber);
         renderPosts(currentPosts);
 
+        showStatus("Benutzer erfolgreich geladen.");
+
+        clearTimeout(statusTimer);
+
+        statusTimer = setTimeout(() => {
+            clearStatus();
+        }, 3000);
+
+        showSections();
+
     } catch (error) {
+        clearStatus();
         showUserError(error.message);
     } finally {
         setUserLoading(loadUserButton, false);

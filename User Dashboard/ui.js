@@ -73,3 +73,29 @@ export function updatePostCount(count) {
     const postCount = document.getElementById("postCount");
     postCount.textContent = `${count} Beiträge`;
 }
+
+export function showStatus(message) {
+    const statusMessage = document.getElementById("statusMessage");
+    statusMessage.textContent = message;
+}
+
+export function clearStatus() {
+    const statusMessage = document.getElementById("statusMessage");
+    statusMessage.textContent = "";
+}
+
+export function showSections() {
+    const userSection = document.getElementById("userSection");
+    const postsSection = document.getElementById("postsSection");
+
+    userSection.hidden = false;
+    postsSection.hidden = false;
+}
+
+export function hideSections() {
+    const userSection = document.getElementById("userSection");
+    const postsSection = document.getElementById("postsSection");
+
+    userSection.hidden = true;
+    postsSection.hidden = true;
+}
