@@ -23,13 +23,17 @@ const postSearchInput = document.getElementById("postSearchInput");
 
 const sortPostsSelect = document.getElementById("sortPostsSelect");
 
+const favoritesOnlyCheckbox = document.getElementById("favoritesOnlyCheckbox");
+
 let currentPosts = [];
 let statusTimer;
+let favoritePostIds = [];
 
 
 async function loadUser() {
     postSearchInput.value = "";
     sortPostsSelect.value = "default";
+    favoritesOnlyCheckbox.checked = false;
 
     const userId = userIdInput.value.trim();
 
@@ -59,7 +63,14 @@ async function loadUser() {
         renderUser(user);
 
         currentPosts = await fetchPosts(userIdNumber);
-        renderPosts(currentPosts);
+        renderPosts(
+            currentPosts,
+            favoritePostIds,
+            (postId) => {
+                toggleFavorite(postId);
+                updatePosts();
+            }
+        );
 
         showStatus("Benutzer erfolgreich geladen.");
 
@@ -79,6 +90,8 @@ async function loadUser() {
     }
 }
 
+loadFavorites();
+
 loadUserButton.addEventListener("click", loadUser);
 
 userIdInput.addEventListener("keydown", (event) => {
@@ -94,9 +107,15 @@ sortPostsSelect.addEventListener("change", updatePosts);
 function updatePosts() {
     const searchTerm = postSearchInput.value.trim().toLowerCase();
 
-    const filteredPosts = currentPosts.filter((post) => {
+    let filteredPosts = currentPosts.filter((post) => {
         return post.title.toLowerCase().includes(searchTerm);
     });
+
+    if (favoritesOnlyCheckbox.checked) {
+        filteredPosts = filteredPosts.filter((post) => {
+            return favoritePostIds.includes(post.id);
+        });
+    }
 
     const sort = sortPostsSelect.value;
     const sortedPosts = [...filteredPosts];
@@ -110,6 +129,43 @@ function updatePosts() {
     }
 
 
-    renderPosts(sortedPosts);
+    renderPosts(
+        sortedPosts,
+        favoritePostIds,
+        (postId) => {
+            toggleFavorite(postId);
+            updatePosts();
+        }
+    );
+}
 
+favoritesOnlyCheckbox.addEventListener("change", updatePosts);
+
+
+function loadFavorites() {
+    const savedFavorites = localStorage.getItem("favoritePostIds");
+
+    if(savedFavorites) {
+        favoritePostIds = JSON.parse(savedFavorites);
+    }
+}
+
+function saveFavorites() {
+    localStorage.setItem(
+        "favoritePostIds",
+        JSON.stringify(favoritePostIds)
+    );
+}
+
+
+function toggleFavorite(postId) {
+    if (favoritePostIds.includes(postId)) {
+        favoritePostIds = favoritePostIds.filter((id) => {
+            return id !== postId;
+        });
+    } else {
+        favoritePostIds.push(postId);
+    }
+
+    saveFavorites();
 }

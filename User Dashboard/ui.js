@@ -23,7 +23,7 @@ export function setUserLoading(button, isLoading) {
     button.textContent = isLoading ? "Lädt..." : "Benutzer laden";
 }
 
-export function renderPosts(posts) {
+export function renderPosts(posts, favoritePostIds, onToggleFavorite) {
     const postList = document.getElementById("postList");
 
     updatePostCount(posts.length);
@@ -42,12 +42,21 @@ export function renderPosts(posts) {
         const listItem = document.createElement("li");
         const title = document.createElement("h3");
         const body = document.createElement("p");
+        const favoriteButton = document.createElement("button");
 
         title.textContent = post.title;
         body.textContent = post.body;
+        favoriteButton.textContent = favoritePostIds.includes(post.id)
+        ? "Favorit entfernen"
+        : "Favorit";
+
+        favoriteButton.addEventListener("click", () => {
+            onToggleFavorite(post.id);
+        });
 
         listItem.appendChild(title);
         listItem.appendChild(body);
+        listItem.appendChild(favoriteButton);
 
         postList.appendChild(listItem);
 
