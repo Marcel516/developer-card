@@ -18,16 +18,19 @@ import {
 
 const userIdInput = document.getElementById("userIdInput");
 const loadUserButton = document.getElementById("loadUserButton");
-
 const postSearchInput = document.getElementById("postSearchInput");
-
 const sortPostsSelect = document.getElementById("sortPostsSelect");
-
 const favoritesOnlyCheckbox = document.getElementById("favoritesOnlyCheckbox");
+const prevPageButton = document.getElementById("prevPageButton");
+const nextPageButton = document.getElementById("nextPageButton");
+const pageInfo = document.getElementById("pageInfo");
 
 let currentPosts = [];
 let statusTimer;
 let favoritePostIds = [];
+let currentPage = 1;
+
+const postsPerPage = 3;
 
 
 async function loadUser() {
@@ -36,6 +39,8 @@ async function loadUser() {
     favoritesOnlyCheckbox.checked = false;
 
     const userId = userIdInput.value.trim();
+
+    currentPage = 1;
 
     hideSections();
     clearStatus();
@@ -63,14 +68,7 @@ async function loadUser() {
         renderUser(user);
 
         currentPosts = await fetchPosts(userIdNumber);
-        renderPosts(
-            currentPosts,
-            favoritePostIds,
-            (postId) => {
-                toggleFavorite(postId);
-                updatePosts();
-            }
-        );
+        updatePosts();
 
         showStatus("Benutzer erfolgreich geladen.");
 
@@ -101,8 +99,15 @@ userIdInput.addEventListener("keydown", (event) => {
 });
 
 
-postSearchInput.addEventListener("input", updatePosts);
-sortPostsSelect.addEventListener("change", updatePosts);
+postSearchInput.addEventListener("input", () => {
+    currentPage = 1;
+    updatePosts();
+});
+
+sortPostsSelect.addEventListener("change", () => {
+    currentPage = 1;
+    updatePosts();
+});
 
 function updatePosts() {
     const searchTerm = postSearchInput.value.trim().toLowerCase();
@@ -128,9 +133,12 @@ function updatePosts() {
         sortedPosts.sort((a, b) => b.title.localeCompare(a.title));
     }
 
+    const paginatedPosts = getPaginatedPosts(sortedPosts);
+
+    updatePagination(sortedPosts.length);
 
     renderPosts(
-        sortedPosts,
+        paginatedPosts,
         favoritePostIds,
         (postId) => {
             toggleFavorite(postId);
@@ -139,8 +147,20 @@ function updatePosts() {
     );
 }
 
-favoritesOnlyCheckbox.addEventListener("change", updatePosts);
+prevPageButton.addEventListener("click", () => {
+    currentPage--;
+    updatePosts();
+});
 
+nextPageButton.addEventListener("click", () => {
+    currentPage++;
+    updatePosts();
+})
+
+favoritesOnlyCheckbox.addEventListener("change", () => {
+    currentPage = 1;
+    updatePosts();
+});
 
 function loadFavorites() {
     const savedFavorites = localStorage.getItem("favoritePostIds");
@@ -168,4 +188,27 @@ function toggleFavorite(postId) {
     }
 
     saveFavorites();
+}
+
+function getPaginatedPosts(posts) {
+    const startIndex = (currentPage - 1) * postsPerPage;
+    const endIndex = startIndex + postsPerPage;
+
+    return posts.slice(startIndex, endIndex);
+}
+
+function updatePagination(totalPosts) {
+    const totalPages = Math.ceil(totalPosts / postsPerPage);
+
+    if (totalPages === 0) {
+        pageInfo.textContent = "Keine Seiten";
+        prevPageButton.disabled = true;
+        nextPageButton.disabled = true;
+        return;
+    }
+
+    pageInfo.textContent = `Seite ${currentPage} von ${totalPages}`;
+
+    prevPageButton.disabled = currentPage === 1;
+    nextPageButton.disabled = currentPage === totalPages;
 }
