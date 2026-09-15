@@ -13,7 +13,9 @@ import {
     showStatus,
     clearStatus,
     showSections,
-    hideSections
+    hideSections,
+    showPostDetails,
+    hidePostDetails
 } from "./ui.js";
 
 const userIdInput = document.getElementById("userIdInput");
@@ -24,6 +26,7 @@ const favoritesOnlyCheckbox = document.getElementById("favoritesOnlyCheckbox");
 const prevPageButton = document.getElementById("prevPageButton");
 const nextPageButton = document.getElementById("nextPageButton");
 const pageInfo = document.getElementById("pageInfo");
+const closePostDetailButton = document.getElementById("closePostDetailButton");
 
 let currentPosts = [];
 let statusTimer;
@@ -47,6 +50,7 @@ async function loadUser() {
     clearUserError();
     clearUser();
     clearPosts();
+    hidePostDetails();
 
     if(!userId) {
         showUserError("Bitte eine User-ID eingeben");
@@ -143,17 +147,24 @@ function updatePosts() {
         (postId) => {
             toggleFavorite(postId);
             updatePosts();
+        },
+        (post) => {
+            showPostDetails(post);
         }
     );
 }
 
+closePostDetailButton.addEventListener("click", hidePostDetails);
+
 prevPageButton.addEventListener("click", () => {
     currentPage--;
+    hidePostDetails();
     updatePosts();
 });
 
 nextPageButton.addEventListener("click", () => {
     currentPage++;
+    hidePostDetails();
     updatePosts();
 })
 
@@ -211,4 +222,6 @@ function updatePagination(totalPosts) {
 
     prevPageButton.disabled = currentPage === 1;
     nextPageButton.disabled = currentPage === totalPages;
+
 }
+

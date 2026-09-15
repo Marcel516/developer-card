@@ -23,7 +23,7 @@ export function setUserLoading(button, isLoading) {
     button.textContent = isLoading ? "Lädt..." : "Benutzer laden";
 }
 
-export function renderPosts(posts, favoritePostIds, onToggleFavorite) {
+export function renderPosts(posts, favoritePostIds, onToggleFavorite, onShowDetails) {
     const postList = document.getElementById("postList");
 
     updatePostCount(posts.length);
@@ -43,6 +43,8 @@ export function renderPosts(posts, favoritePostIds, onToggleFavorite) {
         const title = document.createElement("h3");
         const body = document.createElement("p");
         const favoriteButton = document.createElement("button");
+        const detailButton = document.createElement("button");
+        detailButton.textContent = "Details anzeigen";
 
         title.textContent = post.title;
         body.textContent = post.body;
@@ -54,14 +56,21 @@ export function renderPosts(posts, favoritePostIds, onToggleFavorite) {
             onToggleFavorite(post.id);
         });
 
+        detailButton.addEventListener("click", () => {
+            onShowDetails(post);
+        });
+
         listItem.appendChild(title);
         listItem.appendChild(body);
         listItem.appendChild(favoriteButton);
+        listItem.appendChild(detailButton);
 
         postList.appendChild(listItem);
 
     });
 }
+
+
 
 export function clearUser() {
     const userName = document.getElementById("userName");
@@ -107,4 +116,21 @@ export function hideSections() {
 
     userSection.hidden = true;
     postsSection.hidden = true;
+}
+
+export function showPostDetails(post) {
+    const postDetailSection = document.getElementById("postDetailSection");
+    const postDetailTitle = document.getElementById("postDetailTitle");
+    const postDetailBody = document.getElementById("postDetailBody");
+
+    postDetailTitle.textContent = post.title;
+    postDetailBody.textContent = post.body;
+
+    postDetailSection.hidden = false;
+}
+
+export function hidePostDetails() {
+    const postDetailSection = document.getElementById("postDetailSection");
+
+    postDetailSection.hidden = true;
 }
