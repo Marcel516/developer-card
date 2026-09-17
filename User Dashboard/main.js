@@ -159,6 +159,9 @@ function updatePosts() {
         },
         (postId) => {
             startEditPost(postId);
+        },
+        (postId) => {
+            deletePost(postId);
         }
     );
 }
@@ -271,3 +274,30 @@ cancelEditButton.addEventListener("click", () => {
     editingPostId = null;
 });
 
+
+function deletePost(postId) {
+    const confirmed = confirm("Post wirklich löschen?")
+
+    if(!confirmed) {
+        return;
+    }
+
+    currentPosts = currentPosts.filter((post) => {
+        return post.id !== postId;
+    });
+
+    favoritePostIds = favoritePostIds.filter((id) => {
+        return id !== postId;
+    });
+
+    saveFavorites();
+
+    const totalPages = Math.ceil(currentPosts.length / postsPerPage);
+
+    if (currentPage > totalPages && currentPage > 1) {
+        currentPage--;
+    }
+
+    updatePosts();
+
+}

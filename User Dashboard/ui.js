@@ -28,7 +28,8 @@ export function renderPosts(
     favoritePostIds, 
     onToggleFavorite, 
     onShowDetails,
-    onEditPost
+    onEditPost,
+    onDeletePost
     ) {
 
     const postList = document.getElementById("postList");
@@ -54,6 +55,8 @@ export function renderPosts(
         detailButton.textContent = "Details anzeigen";
         const editButton = document.createElement("button");
         editButton.textContent = "Bearbeiten";
+        const deleteButton = document.createElement("button");
+        deleteButton.textContent = "Löschen";
 
         title.textContent = post.title;
         body.textContent = post.body;
@@ -73,11 +76,16 @@ export function renderPosts(
             onEditPost(post.id);
         });
 
+        deleteButton.addEventListener("click", () => {
+            onDeletePost(post.id);
+        });
+
         listItem.appendChild(title);
         listItem.appendChild(body);
         listItem.appendChild(favoriteButton);
         listItem.appendChild(detailButton);
         listItem.appendChild(editButton);
+        listItem.appendChild(deleteButton);
 
         postList.appendChild(listItem);
 
