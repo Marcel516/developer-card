@@ -15,7 +15,7 @@ import {
     showSections,
     hideSections,
     showPostDetails,
-    hidePostDetails
+    hidePostDetails,
 } from "./ui.js";
 
 const userIdInput = document.getElementById("userIdInput");
@@ -27,11 +27,17 @@ const prevPageButton = document.getElementById("prevPageButton");
 const nextPageButton = document.getElementById("nextPageButton");
 const pageInfo = document.getElementById("pageInfo");
 const closePostDetailButton = document.getElementById("closePostDetailButton");
+const editPostSection = document.getElementById("editPostSection");
+const editPostTitle = document.getElementById("editPostTitle");
+const editPostBody = document.getElementById("editPostBody");
+const savePostButton = document.getElementById("savePostButton");
+const cancelEditButton = document.getElementById("cancelEditButton");
 
 let currentPosts = [];
 let statusTimer;
 let favoritePostIds = [];
 let currentPage = 1;
+let editingPostId = null;
 
 const postsPerPage = 3;
 
@@ -150,6 +156,9 @@ function updatePosts() {
         },
         (post) => {
             showPostDetails(post);
+        },
+        (postId) => {
+            startEditPost(postId);
         }
     );
 }
@@ -224,4 +233,41 @@ function updatePagination(totalPosts) {
     nextPageButton.disabled = currentPage === totalPages;
 
 }
+
+
+function startEditPost(postId) {
+    const post = currentPosts.find((post) => post.id === postId);
+
+    editingPostId = post.id;
+
+    editPostTitle.value = post.title;
+    editPostBody.value = post.body;
+
+    editPostSection.hidden = false;
+}
+
+
+function saveEditedPost() {
+    const post = currentPosts.find((post) => post.id === editingPostId);
+
+    if (!post) {
+        return;
+    }
+
+    post.title = editPostTitle.value.trim();
+    post.body = editPostBody.value.trim();
+
+    editPostSection.hidden = true;
+    editingPostId = null;
+
+    updatePosts();
+}
+
+savePostButton.addEventListener("click", saveEditedPost);
+
+cancelEditButton.addEventListener("click", () => {
+
+    editPostSection.hidden = true;
+    editingPostId = null;
+});
 

@@ -23,7 +23,14 @@ export function setUserLoading(button, isLoading) {
     button.textContent = isLoading ? "Lädt..." : "Benutzer laden";
 }
 
-export function renderPosts(posts, favoritePostIds, onToggleFavorite, onShowDetails) {
+export function renderPosts(
+    posts, 
+    favoritePostIds, 
+    onToggleFavorite, 
+    onShowDetails,
+    onEditPost
+    ) {
+
     const postList = document.getElementById("postList");
 
     updatePostCount(posts.length);
@@ -45,6 +52,8 @@ export function renderPosts(posts, favoritePostIds, onToggleFavorite, onShowDeta
         const favoriteButton = document.createElement("button");
         const detailButton = document.createElement("button");
         detailButton.textContent = "Details anzeigen";
+        const editButton = document.createElement("button");
+        editButton.textContent = "Bearbeiten";
 
         title.textContent = post.title;
         body.textContent = post.body;
@@ -60,10 +69,15 @@ export function renderPosts(posts, favoritePostIds, onToggleFavorite, onShowDeta
             onShowDetails(post);
         });
 
+        editButton.addEventListener("click", () => {
+            onEditPost(post.id);
+        });
+
         listItem.appendChild(title);
         listItem.appendChild(body);
         listItem.appendChild(favoriteButton);
         listItem.appendChild(detailButton);
+        listItem.appendChild(editButton);
 
         postList.appendChild(listItem);
 

@@ -72,18 +72,38 @@
                 <button id="nextPageButton" type="button">Weiter</button>
             </div>
 
-            <section id="postDetailSection" hidden>
-                <h2>Post-Details</h2>
-
-                <h3 id="postDetailTitle"></h3>
-                <p id="postDetailBody"></p>
-
-                <button id="closePostDetailButton" type="button">
-                    Schließen
-                </button>
-            </section>
-            
         </section>
+
+        <section id="postDetailSection" hidden>
+            <h2>Post-Details</h2>
+
+            <h3 id="postDetailTitle"></h3>
+            <p id="postDetailBody"></p>
+
+            <button id="closePostDetailButton" type="button">
+                Schließen
+            </button>
+        </section>
+
+        <section id="editPostSection" hidden>
+            <h2>Post bearbeiten</h2>
+
+            <label for="editPostTitle">Titel</label>
+            <input id="editPostTitle" type="text">
+
+            <label for="editPostBody">Text</label>
+            <textarea id="editPostBody"></textarea>
+
+            <button id="savePostButton" type="button">
+                Speichern
+            </button>
+
+            <button id="cancelEditButton" type="button">
+                Abbrechen
+            </button>
+        </section>
+
+
     </main>
 
     <script type="module" src="/main.js"></script>
