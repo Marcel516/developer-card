@@ -32,6 +32,9 @@ const editPostTitle = document.getElementById("editPostTitle");
 const editPostBody = document.getElementById("editPostBody");
 const savePostButton = document.getElementById("savePostButton");
 const cancelEditButton = document.getElementById("cancelEditButton");
+const newPostTitle = document.getElementById("newPostTitle");
+const newPostBody = document.getElementById("newPostBody");
+const createPostButton = document.getElementById("createPostButton");
 
 let currentPosts = [];
 let statusTimer;
@@ -301,3 +304,36 @@ function deletePost(postId) {
     updatePosts();
 
 }
+
+function createPost() {
+    const title = newPostTitle.value.trim();
+    const body = newPostBody.value.trim();
+    const errorMessage = document.getElementById("createPostError");
+
+    errorMessage.textContent = "";
+
+    if (!title || !body) {
+        errorMessage.textContent = "Titel und Text bitte ausfüllen";
+        return;
+    }
+
+    const newId = Date.now();
+
+    const newPost = {
+        id: newId,
+        title,
+        body
+    };
+
+    currentPosts.push(newPost);
+
+    newPostTitle.value = "";
+    newPostBody.value = "";
+
+    currentPage = 1;
+
+    updatePosts();
+
+}
+
+createPostButton.addEventListener("click", createPost);
