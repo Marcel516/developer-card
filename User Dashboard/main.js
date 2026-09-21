@@ -35,12 +35,14 @@ const cancelEditButton = document.getElementById("cancelEditButton");
 const newPostTitle = document.getElementById("newPostTitle");
 const newPostBody = document.getElementById("newPostBody");
 const createPostButton = document.getElementById("createPostButton");
+const resetPostsButton = document.getElementById("resetPostsButton");
 
 let currentPosts = [];
 let statusTimer;
 let favoritePostIds = [];
 let currentPage = 1;
 let editingPostId = null;
+let currentUserId = null;
 
 const postsPerPage = 3;
 
@@ -80,7 +82,17 @@ async function loadUser() {
         const user = await fetchUser(userIdNumber);
         renderUser(user);
 
-        currentPosts = await fetchPosts(userIdNumber);
+        currentUserId = userIdNumber;
+
+        const savedPosts = loadSavedPosts(userIdNumber);
+
+        if (savedPosts) {
+            currentPosts = savedPosts;
+        } else {
+            currentPosts = await fetchPosts(userIdNumber);
+            savePosts();
+        }
+
         updatePosts();
 
         showStatus("Benutzer erfolgreich geladen.");
@@ -263,6 +275,8 @@ function saveEditedPost() {
     post.title = editPostTitle.value.trim();
     post.body = editPostBody.value.trim();
 
+    savePosts();
+
     editPostSection.hidden = true;
     editingPostId = null;
 
@@ -301,6 +315,8 @@ function deletePost(postId) {
         currentPage--;
     }
 
+    savePosts();
+
     updatePosts();
 
 }
@@ -327,6 +343,8 @@ function createPost() {
 
     currentPosts.push(newPost);
 
+    savePosts();
+
     newPostTitle.value = "";
     newPostBody.value = "";
 
@@ -337,3 +355,42 @@ function createPost() {
 }
 
 createPostButton.addEventListener("click", createPost);
+
+function savePosts() {
+    if (currentUserId === null) {
+        return;
+    }
+
+    localStorage.setItem(
+        `posts_user_${currentUserId}`,
+        JSON.stringify(currentPosts)
+    );
+}
+
+function loadSavedPosts(userId) {
+    const savedPosts = localStorage.getItem(`posts_user_${userId}`);
+
+    if (savedPosts) {
+        return JSON.parse(savedPosts);
+    }
+
+    return null;
+}
+
+async function resetPosts() {
+    if (currentUserId === null) {
+        return;
+    }
+
+    localStorage.removeItem(`posts_user_${currentUserId}`);
+
+    currentPosts = await fetchPosts(currentUserId);
+
+    savePosts();
+
+    currentPage = 1;
+
+    updatePosts();
+}
+
+resetPostsButton.addEventListener("click", resetPosts);
