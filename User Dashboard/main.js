@@ -17,6 +17,13 @@ import {
     showPostDetails,
     hidePostDetails,
 } from "./ui.js";
+import {
+    savePosts,
+    loadSavedPosts,
+    removeSavedPosts,
+    saveFavorites,
+    loadFavorites
+} from "./storage.js";
 
 const userIdInput = document.getElementById("userIdInput");
 const loadUserButton = document.getElementById("loadUserButton");
@@ -39,7 +46,7 @@ const resetPostsButton = document.getElementById("resetPostsButton");
 
 let currentPosts = [];
 let statusTimer;
-let favoritePostIds = [];
+let favoritePostIds = loadFavorites();
 let currentPage = 1;
 let editingPostId = null;
 let currentUserId = null;
@@ -90,7 +97,7 @@ async function loadUser() {
             currentPosts = savedPosts;
         } else {
             currentPosts = await fetchPosts(userIdNumber);
-            savePosts();
+            savePosts(currentUserId, currentPosts);
         }
 
         updatePosts();
@@ -113,7 +120,6 @@ async function loadUser() {
     }
 }
 
-loadFavorites();
 
 loadUserButton.addEventListener("click", loadUser);
 
@@ -200,22 +206,6 @@ favoritesOnlyCheckbox.addEventListener("change", () => {
     updatePosts();
 });
 
-function loadFavorites() {
-    const savedFavorites = localStorage.getItem("favoritePostIds");
-
-    if(savedFavorites) {
-        favoritePostIds = JSON.parse(savedFavorites);
-    }
-}
-
-function saveFavorites() {
-    localStorage.setItem(
-        "favoritePostIds",
-        JSON.stringify(favoritePostIds)
-    );
-}
-
-
 function toggleFavorite(postId) {
     if (favoritePostIds.includes(postId)) {
         favoritePostIds = favoritePostIds.filter((id) => {
@@ -225,7 +215,7 @@ function toggleFavorite(postId) {
         favoritePostIds.push(postId);
     }
 
-    saveFavorites();
+    saveFavorites(favoritePostIds);
 }
 
 function getPaginatedPosts(posts) {
@@ -275,7 +265,7 @@ function saveEditedPost() {
     post.title = editPostTitle.value.trim();
     post.body = editPostBody.value.trim();
 
-    savePosts();
+    savePosts(currentUserId, currentPosts);
 
     editPostSection.hidden = true;
     editingPostId = null;
@@ -307,7 +297,7 @@ function deletePost(postId) {
         return id !== postId;
     });
 
-    saveFavorites();
+    saveFavorites(favoritePostIds);
 
     const totalPages = Math.ceil(currentPosts.length / postsPerPage);
 
@@ -315,7 +305,7 @@ function deletePost(postId) {
         currentPage--;
     }
 
-    savePosts();
+    savePosts(currentUserId, currentPosts);
 
     updatePosts();
 
@@ -343,7 +333,7 @@ function createPost() {
 
     currentPosts.push(newPost);
 
-    savePosts();
+    savePosts(currentUserId, currentPosts);
 
     newPostTitle.value = "";
     newPostBody.value = "";
@@ -356,37 +346,16 @@ function createPost() {
 
 createPostButton.addEventListener("click", createPost);
 
-function savePosts() {
-    if (currentUserId === null) {
-        return;
-    }
-
-    localStorage.setItem(
-        `posts_user_${currentUserId}`,
-        JSON.stringify(currentPosts)
-    );
-}
-
-function loadSavedPosts(userId) {
-    const savedPosts = localStorage.getItem(`posts_user_${userId}`);
-
-    if (savedPosts) {
-        return JSON.parse(savedPosts);
-    }
-
-    return null;
-}
-
 async function resetPosts() {
     if (currentUserId === null) {
         return;
     }
 
-    localStorage.removeItem(`posts_user_${currentUserId}`);
+    removeSavedPosts(currentUserId);
 
     currentPosts = await fetchPosts(currentUserId);
 
-    savePosts();
+    savePosts(currentUserId, currentPosts);
 
     currentPage = 1;
 
