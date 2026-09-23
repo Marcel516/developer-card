@@ -13,7 +13,7 @@
     <main>
         <h1>User Dashboard</h1>
 
-        <section>
+        <section class="panel">
             <label for="userIdInput">User-ID</label>
 
             <input
@@ -30,13 +30,13 @@
             <p id="userError"></p>
         </section>
 
-        <section id="userSection" hidden>
+        <section id="userSection" class="panel" hidden>
             <p id="userName"></p>
             <p id="userEmail"></p>
             <p id="userCity"></p>
         </section>
 
-        <section id="postsSection" hidden>
+        <section id="postsSection" class="panel" hidden>
             <h2>Beiträge</h2>
 
             <label for="postSearchInput">Beiträge durchsuchen</label>
@@ -74,7 +74,7 @@
 
         </section>
 
-        <section id="postDetailSection" hidden>
+        <section id="postDetailSection" class="panel" hidden>
             <h2>Post-Details</h2>
 
             <h3 id="postDetailTitle"></h3>
@@ -85,7 +85,7 @@
             </button>
         </section>
 
-        <section id="editPostSection" hidden>
+        <section id="editPostSection" class="panel" hidden>
             <h2>Post bearbeiten</h2>
 
             <label for="editPostTitle">Titel</label>
@@ -103,7 +103,7 @@
             </button>
         </section>
 
-        <section id="createPostSection">
+        <section id="createPostSection" class="panel">
             <h2>Neuen Post erstellen</h2>
 
             <label for="newPostTitle">Titel</label>

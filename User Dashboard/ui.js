@@ -32,6 +32,7 @@ export function renderPosts(
     onDeletePost
     ) {
 
+
     const postList = document.getElementById("postList");
 
     updatePostCount(posts.length);
@@ -88,6 +89,11 @@ export function renderPosts(
         listItem.appendChild(deleteButton);
 
         postList.appendChild(listItem);
+
+        deleteButton.classList.add("btn-danger");
+        editButton.classList.add("btn-warning");
+        favoriteButton.classList.add("btn-favorite");
+        detailButton.classList.add("btn-secondary");
 
     });
 }

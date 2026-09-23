@@ -1,0 +1,122 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f3f4f6;
+    color: #222;
+}
+
+main {
+    width: min(900px, 90%);
+    margin: 40px auto;
+}
+
+.panel {
+    background: white;
+    padding: 24px;
+    margin-bottom: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px rgba(0, 0, 0, 0.08);
+}
+
+input,
+textarea,
+select {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px 12px;
+    margin-top: 6px;
+    margin-bottom: 14px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+button {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.95rem;
+}
+
+button:hover {
+    transform: translateY(-1px);
+}
+
+#postList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#postList li{
+    padding: 18px;
+    margin-bottom: 16px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background: #fafafa;
+}
+
+#postList h3 {
+    margin-top: 0;
+}
+
+#postList button {
+    margin-right: 8px;
+    margin-top: 8px;
+}
+
+#favoritesOnlyCheckbox{
+    width: 3%;
+    margin-left: 0;
+}
+
+
+.btn-danger {
+    background: #dc2626;
+    color: white;
+}
+
+.btn-warning {
+    background: #f59e0b;
+    color: white;
+}
+
+.btn-warning:hover,
+.btn-danger:hover {
+    opacity: 0.9;
+}
+
+.btn-favorite {
+    background: #7c3aed;
+    color: white;
+}
+
+.btn-secondary {
+    background: #374151;
+    color: white;
+}
+
+.btn-favorite:hover,
+.btn-secondary:hover {
+    opacity: 0.9;
+}
+
+
+
+
+@media (max-width: 600px) {
+    main {
+        width: 94%;
+        margin: 20px auto;
+    }
+
+    .panel {
+        padding: 16px;
+    }
+
+    #postList button {
+        width: 100%;
+        margin-right: 0;
+    }
+}
