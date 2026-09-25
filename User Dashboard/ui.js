@@ -150,11 +150,14 @@ export function showPostDetails(post) {
     const postDetailSection = document.getElementById("postDetailSection");
     const postDetailTitle = document.getElementById("postDetailTitle");
     const postDetailBody = document.getElementById("postDetailBody");
+    const postDetailHeading = document.getElementById("postDetailHeading");
 
     postDetailTitle.textContent = post.title;
     postDetailBody.textContent = post.body;
 
     postDetailSection.hidden = false;
+    
+    postDetailHeading.focus();
 }
 
 export function hidePostDetails() {

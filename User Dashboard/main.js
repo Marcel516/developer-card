@@ -246,12 +246,18 @@ function updatePagination(totalPosts) {
 function startEditPost(postId) {
     const post = currentPosts.find((post) => post.id === postId);
 
+    if (!post) {
+        return;
+    }
+
     editingPostId = post.id;
 
     editPostTitle.value = post.title;
     editPostBody.value = post.body;
 
     editPostSection.hidden = false;
+
+    editPostTitle.focus();
 }
 
 
@@ -318,8 +324,15 @@ function createPost() {
 
     errorMessage.textContent = "";
 
-    if (!title || !body) {
-        errorMessage.textContent = "Titel und Text bitte ausfüllen";
+    if (!title) {
+        errorMessage.textContent = "Bitte einen Titel eingeben.";
+        newPostTitle.focus();
+        return;
+    }
+
+    if (!body) {
+        errorMessage.textContent = "Bitte einen Text eingeben.";
+        newPostBody.focus();
         return;
     }
 
