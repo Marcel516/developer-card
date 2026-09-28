@@ -37,12 +37,14 @@ const closePostDetailButton = document.getElementById("closePostDetailButton");
 const editPostSection = document.getElementById("editPostSection");
 const editPostTitle = document.getElementById("editPostTitle");
 const editPostBody = document.getElementById("editPostBody");
-const savePostButton = document.getElementById("savePostButton");
 const cancelEditButton = document.getElementById("cancelEditButton");
 const newPostTitle = document.getElementById("newPostTitle");
 const newPostBody = document.getElementById("newPostBody");
-const createPostButton = document.getElementById("createPostButton");
 const resetPostsButton = document.getElementById("resetPostsButton");
+const userForm = document.getElementById("userForm");
+const createPostForm = document.getElementById("createPostForm");
+const editPostForm = document.getElementById("editPostForm");
+
 
 let currentPosts = [];
 let statusTimer;
@@ -120,15 +122,10 @@ async function loadUser() {
     }
 }
 
-
-loadUserButton.addEventListener("click", loadUser);
-
-userIdInput.addEventListener("keydown", (event) => {
-    if (event.key === "Enter") {
-        loadUser();
-    }
+userForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    loadUser();
 });
-
 
 postSearchInput.addEventListener("input", () => {
     currentPage = 1;
@@ -279,7 +276,10 @@ function saveEditedPost() {
     updatePosts();
 }
 
-savePostButton.addEventListener("click", saveEditedPost);
+editPostForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    saveEditedPost();
+});
 
 cancelEditButton.addEventListener("click", () => {
 
@@ -324,14 +324,14 @@ function createPost() {
 
     errorMessage.textContent = "";
 
-    if (!title) {
-        errorMessage.textContent = "Bitte einen Titel eingeben.";
+    if (!title || title.length < 3) {
+        errorMessage.textContent = "Bitte einen Titel mit mindestens 3 Zeichen eingeben.";
         newPostTitle.focus();
         return;
     }
 
-    if (!body) {
-        errorMessage.textContent = "Bitte einen Text eingeben.";
+    if (!body || body.length < 10) {
+        errorMessage.textContent = "Bitte einen Text mit mindestens 10 Zeichen eingeben.";
         newPostBody.focus();
         return;
     }
@@ -357,7 +357,10 @@ function createPost() {
 
 }
 
-createPostButton.addEventListener("click", createPost);
+createPostForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    createPost();
+});
 
 async function resetPosts() {
     if (currentUserId === null) {

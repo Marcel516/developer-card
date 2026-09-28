@@ -14,17 +14,20 @@
         <h1>User Dashboard</h1>
 
         <section class="panel">
-            <label for="userIdInput">User-ID</label>
 
-            <input
-                id="userIdInput"
-                type="number"
-                placeholder="z. B. 1"
-            >
+            <form id="userForm">
+                <label for="userIdInput">User-ID</label>
 
-            <button id="loadUserButton" type="button">
-                Benutzer laden
-            </button>
+                <input
+                    id="userIdInput"
+                    type="number"
+                    placeholder="z. B. 1"
+                >
+
+                <button id="loadUserButton" type="submit">
+                    Benutzer laden
+                </button>
+            </form>
 
             <p id="statusMessage" aria-live="polite"></p>
             <p id="userError" aria-live="assertive"></p>
@@ -88,33 +91,38 @@
         <section id="editPostSection" class="panel" hidden>
             <h2 id="editPostHeading" tabindex="-1">Post bearbeiten</h2>
 
-            <label for="editPostTitle">Titel</label>
-            <input id="editPostTitle" type="text">
+            <form id="editPostForm">
+                <label for="editPostTitle">Titel</label>
+                <input id="editPostTitle" type="text">
 
-            <label for="editPostBody">Text</label>
-            <textarea id="editPostBody"></textarea>
+                <label for="editPostBody">Text</label>
+                <textarea id="editPostBody"></textarea>
 
-            <button id="savePostButton" type="button">
-                Speichern
-            </button>
+                <button id="savePostButton" type="submit">
+                    Speichern
+                </button>
 
-            <button id="cancelEditButton" type="button">
-                Abbrechen
-            </button>
+                <button id="cancelEditButton" type="button">
+                    Abbrechen
+                </button>
+            </form>
+
         </section>
 
         <section id="createPostSection" class="panel">
             <h2>Neuen Post erstellen</h2>
 
-            <label for="newPostTitle">Titel</label>
-            <input id="newPostTitle" type="text">
+            <form id="createPostForm" novalidate>
+                <label for="newPostTitle">Titel</label>
+                <input id="newPostTitle" type="text" required minlength="3">
 
-            <label for="newPostBody">Text</label>
-            <textarea id="newPostBody"></textarea>
+                <label for="newPostBody">Text</label>
+                <textarea id="newPostBody" required minlength="10"></textarea>
 
-            <button id="createPostButton" type="button">
-                Post erstellen
-            </button>
+                <button id="createPostButton" type="submit">
+                    Post erstellen
+                </button>
+            </form>
 
             <p id="createPostError" aria-live="assertive"></p>
         </section>
