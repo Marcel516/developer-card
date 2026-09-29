@@ -22,7 +22,9 @@ import {
     loadSavedPosts,
     removeSavedPosts,
     saveFavorites,
-    loadFavorites
+    loadFavorites,
+    saveTheme,
+    loadTheme
 } from "./storage.js";
 
 const userIdInput = document.getElementById("userIdInput");
@@ -44,6 +46,7 @@ const resetPostsButton = document.getElementById("resetPostsButton");
 const userForm = document.getElementById("userForm");
 const createPostForm = document.getElementById("createPostForm");
 const editPostForm = document.getElementById("editPostForm");
+const themeToggleButton = document.getElementById("themeToggleButton");
 
 
 let currentPosts = [];
@@ -54,6 +57,8 @@ let editingPostId = null;
 let currentUserId = null;
 
 const postsPerPage = 3;
+
+applySavedTheme();
 
 
 async function loadUser() {
@@ -379,3 +384,29 @@ async function resetPosts() {
 }
 
 resetPostsButton.addEventListener("click", resetPosts);
+
+function toggleTheme() {
+    document.body.classList.toggle("dark-mode");
+
+    const isDarkMode = document.body.classList.contains("dark-mode");
+
+    themeToggleButton.textContent = isDarkMode
+    ? "Hellmodus"
+    : "Dunkelmodus";
+
+    saveTheme(isDarkMode ? "dark" : "light");
+}
+
+themeToggleButton.addEventListener("click", toggleTheme);
+
+function applySavedTheme() {
+    const savedTheme = loadTheme();
+
+    if (savedTheme === "dark") {
+        document.body.classList.add("dark-mode");
+        themeToggleButton.textContent = "Hellmodus";
+    } else {
+        document.body.classList.remove("dark-mode");
+        themeToggleButton.textContent = "Dunkelmodus";
+    }
+}
