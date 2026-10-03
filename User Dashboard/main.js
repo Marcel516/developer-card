@@ -1,6 +1,7 @@
 import {
     fetchUser,
-    fetchPosts
+    fetchPosts,
+    createPostRequest
 } from "./api.js";
 import {
     renderUser,
@@ -47,6 +48,7 @@ const userForm = document.getElementById("userForm");
 const createPostForm = document.getElementById("createPostForm");
 const editPostForm = document.getElementById("editPostForm");
 const themeToggleButton = document.getElementById("themeToggleButton");
+const createPostButton = document.getElementById("createPostButton");
 
 
 let currentPosts = [];
@@ -322,7 +324,7 @@ function deletePost(postId) {
 
 }
 
-function createPost() {
+async function createPost() {
     const title = newPostTitle.value.trim();
     const body = newPostBody.value.trim();
     const errorMessage = document.getElementById("createPostError");
@@ -341,24 +343,31 @@ function createPost() {
         return;
     }
 
-    const newId = Date.now();
+    createPostButton.disabled = true;
+    createPostButton.textContent = "Wird erstellt...";
+    try {
+        const createdPost = await createPostRequest(
+            currentUserId,
+            title,
+            body
+        );
 
-    const newPost = {
-        id: newId,
-        title,
-        body
-    };
+        currentPosts.push(createdPost);
 
-    currentPosts.push(newPost);
+        savePosts(currentUserId, currentPosts);
 
-    savePosts(currentUserId, currentPosts);
+        newPostTitle.value ="";
+        newPostBody.value ="";
 
-    newPostTitle.value = "";
-    newPostBody.value = "";
+        currentPage = 1;
 
-    currentPage = 1;
-
-    updatePosts();
+        updatePosts();
+    } catch(error) {
+        errorMessage.textContent = error.message;
+    } finally {
+        createPostButton.disabled = false;
+        createPostButton.textContent ="Post erstellen";
+    }
 
 }
 
