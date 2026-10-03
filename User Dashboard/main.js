@@ -134,10 +134,27 @@ userForm.addEventListener("submit", (event) => {
     loadUser();
 });
 
-postSearchInput.addEventListener("input", () => {
+
+function debounce(callback, delay) {
+    let timer;
+
+    return () => {
+        clearTimeout(timer);
+
+        timer = setTimeout(() => {
+            callback();
+        }, delay);
+    };
+}
+
+const debouncedPostSearch = debounce(() => {
     currentPage = 1;
     updatePosts();
-});
+}, 300);
+
+postSearchInput.addEventListener("input", debouncedPostSearch);
+
+
 
 sortPostsSelect.addEventListener("change", () => {
     currentPage = 1;

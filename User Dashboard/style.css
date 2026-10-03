@@ -72,7 +72,7 @@ button:hover {
     margin-bottom: 16px;
     border: 1px solid #ddd;
     border-radius: 10px;
-    background: #fafafa;
+    background: var(--background-color);
 }
 
 #postList h3 {
