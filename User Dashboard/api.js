@@ -48,3 +48,30 @@ export async function createPostRequest(userId, title, body) {
 
     return response.json();
 }
+
+
+export async function updatePostRequest(postId, title, body) {
+    const response = await fetch(
+        `https://jsonplaceholder.typicode.com/posts/${postId}`,
+        {
+            method: "PATCH",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+                title,
+                body
+            }) 
+                
+            
+        }
+    );
+
+    if (!response.ok) {
+        throw new Error("Post konnte nicht bearbeitet werden");
+    }
+
+    return response.json();
+}

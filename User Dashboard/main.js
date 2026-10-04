@@ -1,7 +1,8 @@
 import {
     fetchUser,
     fetchPosts,
-    createPostRequest
+    createPostRequest,
+    updatePostRequest
 } from "./api.js";
 import {
     renderUser,
@@ -49,6 +50,7 @@ const createPostForm = document.getElementById("createPostForm");
 const editPostForm = document.getElementById("editPostForm");
 const themeToggleButton = document.getElementById("themeToggleButton");
 const createPostButton = document.getElementById("createPostButton");
+const savePostButton = document.getElementById("savePostButton");
 
 
 let currentPosts = [];
@@ -282,22 +284,44 @@ function startEditPost(postId) {
 }
 
 
-function saveEditedPost() {
-    const post = currentPosts.find((post) => post.id === editingPostId);
+async function saveEditedPost() {
+    const title = editPostTitle.value.trim();
+    const body = editPostBody.value.trim();
 
+    const post = currentPosts.find(
+        (post) => post.id === editingPostId
+    );
+    
     if (!post) {
         return;
     }
 
-    post.title = editPostTitle.value.trim();
-    post.body = editPostBody.value.trim();
+    savePostButton.disabled = true;
+    savePostButton.textContent = "Wird gespeichert...";
 
-    savePosts(currentUserId, currentPosts);
+    try {
+        const updatedPost = await updatePostRequest(
+            editingPostId,
+            title,
+            body
+        );
 
-    editPostSection.hidden = true;
-    editingPostId = null;
+        post.title = updatedPost.title;
+        post.body = updatedPost.body;
 
-    updatePosts();
+        savePosts(currentUserId, currentPosts);
+
+        editPostSection.hidden = true;
+        editingPostId = null;
+
+        updatePosts();
+
+    } catch (error) {
+        statusMessage.textContent = error.message;
+    } finally {
+        savePostButton.disabled = false;
+        savePostButton.textContent = "Speichern";
+    }
 }
 
 editPostForm.addEventListener("submit", (event) => {
