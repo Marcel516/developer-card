@@ -2,7 +2,8 @@ import {
     fetchUser,
     fetchPosts,
     createPostRequest,
-    updatePostRequest
+    updatePostRequest,
+    deletePostRequest
 } from "./api.js";
 import {
     renderUser,
@@ -204,8 +205,8 @@ function updatePosts() {
         (postId) => {
             startEditPost(postId);
         },
-        (postId) => {
-            deletePost(postId);
+        (postId, deleteButton) => {
+            deletePost(postId, deleteButton);
         }
     );
 }
@@ -336,32 +337,48 @@ cancelEditButton.addEventListener("click", () => {
 });
 
 
-function deletePost(postId) {
-    const confirmed = confirm("Post wirklich löschen?")
+async function deletePost(postId, deleteButton) {
+    const confirmed = confirm("Post wirklich löschen?");
 
     if(!confirmed) {
         return;
     }
 
-    currentPosts = currentPosts.filter((post) => {
-        return post.id !== postId;
-    });
+    deleteButton.disabled = true;
+    deleteButton.textContent = "Wird gelöscht...";
 
-    favoritePostIds = favoritePostIds.filter((id) => {
-        return id !== postId;
-    });
+    try {
+        await deletePostRequest(postId);
 
-    saveFavorites(favoritePostIds);
+        currentPosts = currentPosts.filter((post) => {
+            return post.id !== postId;
+        });
 
-    const totalPages = Math.ceil(currentPosts.length / postsPerPage);
+        favoritePostIds = favoritePostIds.filter((id) => {
+            return id !== postId;
+        });
 
-    if (currentPage > totalPages && currentPage > 1) {
-        currentPage--;
+        saveFavorites(favoritePostIds);
+
+        const totalPages = Math.ceil(
+            currentPosts.length / postsPerPage
+        );
+
+        if (currentPage > totalPages && currentPage > 1) {
+            currentPage--;
+        }
+
+        savePosts(currentUserId, currentPosts);
+
+        updatePosts();
+
+    } catch (error) {
+        statusMessage.textContent = error.message;
+
+    } finally {
+        deleteButton.disabled = false;
+        deleteButton.textContent = "Löschen";
     }
-
-    savePosts(currentUserId, currentPosts);
-
-    updatePosts();
 
 }
 

@@ -78,7 +78,7 @@ export function renderPosts(
         });
 
         deleteButton.addEventListener("click", () => {
-            onDeletePost(post.id);
+            onDeletePost(post.id, deleteButton);
         });
 
         listItem.appendChild(title);

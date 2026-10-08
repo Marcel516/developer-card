@@ -18,8 +18,7 @@ function checkResponse(response, notFoundMessage, errorMessage) {
 export async function fetchUser(userId) {
     const response = await fetch(`https://jsonplaceholder.typicode.com/users/${userId}`);
     
-    checkResponse(
-        response,
+    checkResponse(response,
         "Benutzer wurde nicht gefunden",
         "Benutzer konnte nicht geladen werden"
     );
@@ -86,9 +85,7 @@ export async function updatePostRequest(postId, title, body) {
             body: JSON.stringify({
                 title,
                 body
-            }) 
-                
-            
+            })
         }
     );
 
@@ -99,4 +96,20 @@ export async function updatePostRequest(postId, title, body) {
     );
 
     return response.json();
+}
+
+
+export async function deletePostRequest(postId) {
+    const response = await fetch(
+        `https://jsonplaceholder.typicode.com/posts/${postId}`,
+        {
+            method: "DELETE"
+        }
+    );
+
+    checkResponse(
+        response,
+        "Post wurde nicht gefunden",
+        "Post konnte nicht gelöscht werden"
+    );
 }
