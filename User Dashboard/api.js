@@ -1,9 +1,28 @@
+function checkResponse(response, notFoundMessage, errorMessage) {
+    if (response.status === 404) {
+        throw new Error(notFoundMessage);
+    }
+
+    if (response.status >= 500) {
+        throw new Error("Serverfehler – bitte später erneut versuchen");
+    }
+
+    if (!response.ok) {
+        throw new Error(
+            `${errorMessage} (HTTP ${response.status})`
+        );
+    }
+}
+
+
 export async function fetchUser(userId) {
     const response = await fetch(`https://jsonplaceholder.typicode.com/users/${userId}`);
     
-    if (!response.ok) {
-        throw new Error("Benutzer konnte nicht geladen werden");
-    }
+    checkResponse(
+        response,
+        "Benutzer wurde nicht gefunden",
+        "Benutzer konnte nicht geladen werden"
+    );
 
     return response.json();
 }
@@ -15,9 +34,11 @@ export async function fetchPosts(userId) {
 
     const response = await fetch(`https://jsonplaceholder.typicode.com/posts?${params}`);
 
-    if (!response.ok) {
-        throw new Error("Daten konnten nicht geladen werden.");
-    }
+    checkResponse(
+        response,
+        "Posts wurden nicht gefunden",
+        "Posts konnten nicht geladen werden"
+    );
 
     return response.json();
 
@@ -42,9 +63,11 @@ export async function createPostRequest(userId, title, body) {
         }
     );
 
-    if(!response.ok) {
-        throw new Error("Post konnte nicht erstellt werden");
-    }
+    checkResponse(
+        response,
+        "Post-Endpunkt wurde nicht gefunden",
+        "Post konnte nicht erstellt werden"
+    );
 
     return response.json();
 }
@@ -69,9 +92,11 @@ export async function updatePostRequest(postId, title, body) {
         }
     );
 
-    if (!response.ok) {
-        throw new Error("Post konnte nicht bearbeitet werden");
-    }
+    checkResponse(
+        response,
+        "Post wurde nicht gefunden",
+        "Post konnte nicht bearbeitet werden"
+    );
 
     return response.json();
 }
