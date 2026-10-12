@@ -1,3 +1,6 @@
+const API_URL = "https://jsonplaceholder.typicode.com";
+
+
 function checkResponse(response, notFoundMessage, errorMessage) {
     if (response.status === 404) {
         throw new Error(notFoundMessage);
@@ -14,11 +17,19 @@ function checkResponse(response, notFoundMessage, errorMessage) {
     }
 }
 
+async function apiRequest(url, options, notFoundMessage, errorMessage) {
+    const response = await fetch(url, options);
+
+    checkResponse(response, notFoundMessage, errorMessage);
+
+    return response;
+}
+
 
 export async function fetchUser(userId) {
-    const response = await fetch(`https://jsonplaceholder.typicode.com/users/${userId}`);
-    
-    checkResponse(response,
+    const response = await apiRequest(
+        `${API_URL}/users/${userId}`,
+        undefined,
         "Benutzer wurde nicht gefunden",
         "Benutzer konnte nicht geladen werden"
     );
@@ -31,22 +42,20 @@ export async function fetchPosts(userId) {
         userId: userId
     });
 
-    const response = await fetch(`https://jsonplaceholder.typicode.com/posts?${params}`);
-
-    checkResponse(
-        response,
+    const response = await apiRequest(
+        `${API_URL}/posts?${params}`,
+        undefined,
         "Posts wurden nicht gefunden",
         "Posts konnten nicht geladen werden"
     );
 
     return response.json();
-
 }
 
 
 export async function createPostRequest(userId, title, body) {
-    const response = await fetch(
-        "https://jsonplaceholder.typicode.com/posts",
+    const response = await apiRequest(
+        `${API_URL}/posts`,
         {
             method: "POST",
 
@@ -59,11 +68,7 @@ export async function createPostRequest(userId, title, body) {
                 title,
                 body
             })
-        }
-    );
-
-    checkResponse(
-        response,
+        },
         "Post-Endpunkt wurde nicht gefunden",
         "Post konnte nicht erstellt werden"
     );
@@ -73,8 +78,8 @@ export async function createPostRequest(userId, title, body) {
 
 
 export async function updatePostRequest(postId, title, body) {
-    const response = await fetch(
-        `https://jsonplaceholder.typicode.com/posts/${postId}`,
+    const response = await apiRequest(
+        `${API_URL}/posts/${postId}`,
         {
             method: "PATCH",
 
@@ -86,11 +91,7 @@ export async function updatePostRequest(postId, title, body) {
                 title,
                 body
             })
-        }
-    );
-
-    checkResponse(
-        response,
+        },
         "Post wurde nicht gefunden",
         "Post konnte nicht bearbeitet werden"
     );
@@ -100,16 +101,14 @@ export async function updatePostRequest(postId, title, body) {
 
 
 export async function deletePostRequest(postId) {
-    const response = await fetch(
-        `https://jsonplaceholder.typicode.com/posts/${postId}`,
+    await apiRequest(
+        `${API_URL}/posts/${postId}`,
         {
             method: "DELETE"
-        }
-    );
-
-    checkResponse(
-        response,
+        },
         "Post wurde nicht gefunden",
         "Post konnte nicht gelöscht werden"
     );
+
+    
 }
