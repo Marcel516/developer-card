@@ -18,7 +18,14 @@ function checkResponse(response, notFoundMessage, errorMessage) {
 }
 
 async function apiRequest(url, options, notFoundMessage, errorMessage) {
-    const response = await fetch(url, options);
+
+    let response;
+
+    try {
+        response = await fetch(url, options);
+    } catch {
+        throw new Error("Verbindung zum Server fehlgeschlagen");
+    }
 
     checkResponse(response, notFoundMessage, errorMessage);
 
@@ -26,7 +33,11 @@ async function apiRequest(url, options, notFoundMessage, errorMessage) {
         return null;
     }
 
-    return response.json();
+    try {
+        return await response.json();
+    } catch {
+        throw new Error("Serverantwort konnte nicht verarbeitet werden");
+    }
 }
 
 
