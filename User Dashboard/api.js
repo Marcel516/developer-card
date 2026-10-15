@@ -22,19 +22,22 @@ async function apiRequest(url, options, notFoundMessage, errorMessage) {
 
     checkResponse(response, notFoundMessage, errorMessage);
 
-    return response;
+    if (response.status === 204) {
+        return null;
+    }
+
+    return response.json();
 }
 
 
 export async function fetchUser(userId) {
-    const response = await apiRequest(
+    return apiRequest(
         `${API_URL}/users/${userId}`,
         undefined,
         "Benutzer wurde nicht gefunden",
         "Benutzer konnte nicht geladen werden"
     );
 
-    return response.json();
 }
 
 export async function fetchPosts(userId) {
@@ -42,19 +45,18 @@ export async function fetchPosts(userId) {
         userId: userId
     });
 
-    const response = await apiRequest(
+    return apiRequest(
         `${API_URL}/posts?${params}`,
         undefined,
         "Posts wurden nicht gefunden",
         "Posts konnten nicht geladen werden"
     );
 
-    return response.json();
 }
 
 
 export async function createPostRequest(userId, title, body) {
-    const response = await apiRequest(
+    return apiRequest(
         `${API_URL}/posts`,
         {
             method: "POST",
@@ -73,12 +75,11 @@ export async function createPostRequest(userId, title, body) {
         "Post konnte nicht erstellt werden"
     );
 
-    return response.json();
 }
 
 
 export async function updatePostRequest(postId, title, body) {
-    const response = await apiRequest(
+    return apiRequest(
         `${API_URL}/posts/${postId}`,
         {
             method: "PATCH",
@@ -96,12 +97,11 @@ export async function updatePostRequest(postId, title, body) {
         "Post konnte nicht bearbeitet werden"
     );
 
-    return response.json();
 }
 
 
 export async function deletePostRequest(postId) {
-    await apiRequest(
+    return apiRequest(
         `${API_URL}/posts/${postId}`,
         {
             method: "DELETE"
@@ -110,5 +110,4 @@ export async function deletePostRequest(postId) {
         "Post konnte nicht gelöscht werden"
     );
 
-    
 }
