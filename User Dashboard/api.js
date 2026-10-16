@@ -18,13 +18,29 @@ function checkResponse(response, notFoundMessage, errorMessage) {
 }
 
 async function apiRequest(url, options, notFoundMessage, errorMessage) {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => {
+        controller.abort();
+    }, 5000);
 
     let response;
 
     try {
-        response = await fetch(url, options);
-    } catch {
+        response = await fetch(url, {
+            ...options, 
+            signal: controller.signal
+        }); 
+
+    } catch (error) {
+        if (error.name === "AbortError") {
+            throw new Error(
+                "Zeitüberschreitung - Server antwortet zu langsam"
+            );
+        }
+
         throw new Error("Verbindung zum Server fehlgeschlagen");
+    } finally {
+        clearTimeout(timeoutId);
     }
 
     checkResponse(response, notFoundMessage, errorMessage);
