@@ -17,6 +17,48 @@ function checkResponse(response, notFoundMessage, errorMessage) {
     }
 }
 
+function wait(milliseconds) {
+    return new Promise((resolve) => {
+        setTimeout(resolve, milliseconds);
+    });
+}
+
+async function apiRequestWithRetry(
+    url,
+    options,
+    notFoundMessage,
+    errorMessage
+) {
+    try {
+        return await apiRequest(
+            url,
+            options,
+            notFoundMessage,
+            errorMessage
+        );
+    } catch (error) {
+
+        const retryableErrors = [
+            "Verbindung zum Server fehlgeschlagen",
+            "Zeitüberschreitung - Server antwortet zu langsam",
+            "Serverfehler – bitte später erneut versuchen"
+        ];
+
+        if (!retryableErrors.includes(error.message)) {
+            throw error;
+        }
+
+        await wait(1000);
+
+        return apiRequest(
+            url,
+            options,
+            notFoundMessage,
+            errorMessage
+        );
+    }
+}
+
 async function apiRequest(url, options, notFoundMessage, errorMessage) {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => {
@@ -58,7 +100,7 @@ async function apiRequest(url, options, notFoundMessage, errorMessage) {
 
 
 export async function fetchUser(userId) {
-    return apiRequest(
+    return apiRequestWithRetry(
         `${API_URL}/users/${userId}`,
         undefined,
         "Benutzer wurde nicht gefunden",
@@ -72,7 +114,7 @@ export async function fetchPosts(userId) {
         userId: userId
     });
 
-    return apiRequest(
+    return apiRequestWithRetry(
         `${API_URL}/posts?${params}`,
         undefined,
         "Posts wurden nicht gefunden",
