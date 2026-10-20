@@ -27,35 +27,35 @@ async function apiRequestWithRetry(
     url,
     options,
     notFoundMessage,
-    errorMessage
+    errorMessage,
+    maxRetries = 2
 ) {
-    try {
-        return await apiRequest(
-            url,
-            options,
-            notFoundMessage,
-            errorMessage
-        );
-    } catch (error) {
+    for (let attempt = 0; attempt <= maxRetries; attempt++) {
+        
+        try {
+            return await apiRequest(
+                url,
+                options,
+                notFoundMessage,
+                errorMessage
+            );
+        } catch (error) {
+            const retryableErrors = [
+                "Verbindung zum Server fehlgeschlagen",
+                "Zeitüberschreitung - Server antwortet zu langsam",
+                "Serverfehler – bitte später erneut versuchen"
+            ];
 
-        const retryableErrors = [
-            "Verbindung zum Server fehlgeschlagen",
-            "Zeitüberschreitung - Server antwortet zu langsam",
-            "Serverfehler – bitte später erneut versuchen"
-        ];
+            if (!retryableErrors.includes(error.message)) {
+                throw error;
+            }
 
-        if (!retryableErrors.includes(error.message)) {
-            throw error;
+            if(attempt === maxRetries) {
+                throw error;
+            }
+
+            await wait(1000);
         }
-
-        await wait(1000);
-
-        return apiRequest(
-            url,
-            options,
-            notFoundMessage,
-            errorMessage
-        );
     }
 }
 
@@ -104,7 +104,7 @@ export async function fetchUser(userId) {
         `${API_URL}/users/${userId}`,
         undefined,
         "Benutzer wurde nicht gefunden",
-        "Benutzer konnte nicht geladen werden"
+        "Benutzer konnte nicht geladen werden",
     );
 
 }
@@ -118,7 +118,7 @@ export async function fetchPosts(userId) {
         `${API_URL}/posts?${params}`,
         undefined,
         "Posts wurden nicht gefunden",
-        "Posts konnten nicht geladen werden"
+        "Posts konnten nicht geladen werden",
     );
 
 }
