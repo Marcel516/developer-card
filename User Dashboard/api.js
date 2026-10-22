@@ -50,11 +50,16 @@ async function apiRequestWithRetry(
                 throw error;
             }
 
-            if(attempt === maxRetries) {
+            if (attempt === maxRetries) {
                 throw error;
             }
 
-            await wait(1000);
+            const delay = Math.min(
+                1000 * (2 ** attempt),
+                8000
+            );
+
+            await wait(delay);
         }
     }
 }
