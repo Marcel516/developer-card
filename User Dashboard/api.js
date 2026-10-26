@@ -7,7 +7,10 @@ function checkResponse(response, notFoundMessage, errorMessage) {
     }
 
     if (response.status >= 500) {
-        throw new Error("Serverfehler – bitte später erneut versuchen");
+        throw createApiError(
+            "Serverfehler – bitte später erneut versuchen",
+            true
+        );
     }
 
     if (!response.ok) {
@@ -40,13 +43,7 @@ async function apiRequestWithRetry(
                 errorMessage
             );
         } catch (error) {
-            const retryableErrors = [
-                "Verbindung zum Server fehlgeschlagen",
-                "Zeitüberschreitung - Server antwortet zu langsam",
-                "Serverfehler – bitte später erneut versuchen"
-            ];
-
-            if (!retryableErrors.includes(error.message)) {
+            if (!error.retryable) {
                 throw error;
             }
 
@@ -66,6 +63,16 @@ async function apiRequestWithRetry(
     }
 }
 
+
+function createApiError(message, retryable = false) {
+    const error = new Error(message);
+
+    error.retryable = retryable;
+
+    return error;
+}
+
+
 async function apiRequest(url, options, notFoundMessage, errorMessage) {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => {
@@ -82,12 +89,16 @@ async function apiRequest(url, options, notFoundMessage, errorMessage) {
 
     } catch (error) {
         if (error.name === "AbortError") {
-            throw new Error(
-                "Zeitüberschreitung - Server antwortet zu langsam"
+            throw createApiError(
+                "Zeitüberschreitung - Server antwortet zu langsam",
+                true
             );
         }
 
-        throw new Error("Verbindung zum Server fehlgeschlagen");
+        throw createApiError(
+            "Verbindung zum Server fehlgeschlagen",
+            true
+        );
     } finally {
         clearTimeout(timeoutId);
     }
