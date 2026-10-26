@@ -59,7 +59,9 @@ async function apiRequestWithRetry(
                 8000
             );
 
-            await wait(delay);
+            const jitter = Math.floor(Math.random() * 500);
+
+            await wait(delay + jitter);
         }
     }
 }
