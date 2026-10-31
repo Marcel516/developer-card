@@ -3,19 +3,26 @@ const API_URL = "https://jsonplaceholder.typicode.com";
 
 function checkResponse(response, notFoundMessage, errorMessage) {
     if (response.status === 404) {
-        throw new Error(notFoundMessage);
+        throw new ApiError(
+            notFoundMessage,
+            false,
+            response.status
+        );
     }
 
     if (response.status >= 500) {
-        throw createApiError(
+        throw new ApiError(
             "Serverfehler – bitte später erneut versuchen",
-            true
+            true,
+            response.status
         );
     }
 
     if (!response.ok) {
-        throw new Error(
-            `${errorMessage} (HTTP ${response.status})`
+        throw new ApiError(
+            `${errorMessage} (HTTP ${response.status})`,
+            false,
+            response.status
         );
     }
 }
@@ -64,12 +71,14 @@ async function apiRequestWithRetry(
 }
 
 
-function createApiError(message, retryable = false) {
-    const error = new Error(message);
+class ApiError extends Error {
+    constructor(message, retryable = false, status = null) {
+        super(message);
 
-    error.retryable = retryable;
-
-    return error;
+        this.name = "ApiError";
+        this.retryable = retryable;
+        this.status = status;
+    }
 }
 
 
@@ -89,13 +98,13 @@ async function apiRequest(url, options, notFoundMessage, errorMessage) {
 
     } catch (error) {
         if (error.name === "AbortError") {
-            throw createApiError(
+            throw new ApiError(
                 "Zeitüberschreitung - Server antwortet zu langsam",
                 true
             );
         }
 
-        throw createApiError(
+        throw new ApiError(
             "Verbindung zum Server fehlgeschlagen",
             true
         );
